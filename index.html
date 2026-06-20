@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>iGET 2026 — Conference Tracker</title>
+<style>
+  :root {
+    --ieee-blue:    #1a3a6b;
+    --ieee-blue-lt: #2a62c0;
+    --ieee-orange:  #e87722;
+    --bg:           #f0f3f8;
+    --surface:      #ffffff;
+    --surface-2:    #f7f9fc;
+    --border:       #dde1e8;
+    --text:         #1a2035;
+    --text-muted:   #6b7280;
+    --green:        #16a34a;
+    --red:          #dc2626;
+    --yellow:       #d97706;
+    --purple:       #7c3aed;
+    --radius:       10px;
+    --shadow:       0 2px 12px rgba(26,58,107,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ---- Header ---- */
+  .app-header {
+    background: var(--ieee-blue);
+    color: #fff;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .app-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .app-header .logo span {
+    color: var(--ieee-orange);
+  }
+  .conn-status {
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.85;
+  }
+  .conn-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #f87171;
+  }
+  .conn-dot.connected { background: #4ade80; }
+
+  /* ---- Setup Banner ---- */
+  #setup-banner {
+    background: #fef3c7;
+    border-bottom: 2px solid var(--ieee-orange);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+  #setup-banner input {
+    flex: 1;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: monospace;
+  }
+  #setup-banner button {
+    background: var(--ieee-blue);
+    color: #fff;
+    border: none;
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* ---- Tabs ---- */
+  .tabs-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 14px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn.active {
+    color: var(--ieee-blue);
+    border-bottom-color: var(--ieee-orange);
+  }
+  .tab-btn:hover { color: var(--ieee-blue); }
+
+  /* ---- Section ---- */
+  .section { display: none; padding: 24px; }
+  .section.active { display: block; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ieee-blue);
+  }
+  .section-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary   { background: var(--ieee-blue);   color: #fff; }
+  .btn-orange    { background: var(--ieee-orange);  color: #fff; }
+  .btn-outline   { background: #fff; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-danger    { background: var(--red);          color: #fff; }
+  .btn-sm        { padding: 4px 10px; font-size: 12px; }
+
+  /* ---- Search ---- */
+  .search-box {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 13px;
+    width: 220px;
+    outline: none;
+  }
+  .search-box:focus { border-color: var(--ieee-blue-lt); }
+
+  /* ---- Table ---- */
+  .table-wrap {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    background: var(--ieee-blue);
+    color: #fff;
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    max-width: 260px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+
+  /* ---- Badges ---- */
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .badge-green  { background: #dcfce7; color: #15803d; }
+  .badge-red    { background: #fee2e2; color: #b91c1c; }
+  .badge-yellow { background: #fef3c7; color: #b45309; }
+  .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+  .badge-purple { background: #ede9fe; color: #6d28d9; }
+  .badge-gray   { background: #f3f4f6; color: #4b5563; }
+  .badge-orange { background: #ffedd5; color: #c2410c; }
+
+  /* ---- Modal ---- */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ieee-blue);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ieee-orange);
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 8px 11px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--ieee-blue-lt); }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ---- Toast ---- */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--ieee-blue);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.error { background: var(--red); }
+
+  /* ---- Empty state ---- */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ---- Loading ---- */
+  .loading {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* ---- Stats bar ---- */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat-chip .num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ieee-blue);
+  }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .section { padding: 16px; }
+    .app-header { padding: 0 16px; }
+    .tabs-bar { padding: 0 8px; }
+    .tab-btn { padding: 12px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+  <div class="logo">
+    <span>iGET</span> 2026 — Conference Tracker
+  </div>
+  <div class="conn-status">
+    <div class="conn-dot" id="conn-dot"></div>
+    <span id="conn-label">Not connected</span>
+  </div>
+</header>
+
+<!-- Setup Banner -->
+<div id="setup-banner">
+  <span>🔗</span>
+  <strong>Paste your Apps Script Web App URL:</strong>
+  <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/...../exec"/>
+  <button onclick="saveScriptUrl()">Connect</button>
+</div>
+
+<!-- Tabs -->
+<nav class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('tasks', this)">📋 Tasks</button>
+  <button class="tab-btn" onclick="switchTab('queries', this)">📬 Contact Queries</button>
+  <button class="tab-btn" onclick="switchTab('papers', this)">📄 Paper Reviews</button>
+  <button class="tab-btn" onclick="switchTab('team', this)">👥 Team</button>
+  <button class="tab-btn" onclick="switchTab('sponsors', this)">🤝 Sponsors</button>
+</nav>
+
+<!-- ============================================================
+     TAB: TASKS
+============================================================ -->
+<div class="section active" id="tab-tasks">
+  <div class="section-header">
+    <div class="section-title">Conference Tasks</div>
+    <div class="section-actions">
+      <input class="search-box" placeholder="Search tasks..." oninput="filterTable('tasks-table', this.value)"/>
+      <button class="btn btn-orange" onclick="openModal('tasks')">+ Add Task</button>
+      <button class="btn btn-outline" onclick="exportCSV('tasks')">Export CSV</button>
+    </div>
+  </div>
+  <div class="stats-bar" id="tasks-stats"></div>
+  <div class="table-wrap">
+    <div class="loading" id="tasks-loading">Loading...</div>
+    <table id="tasks-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Category</th><th>Task</th><th>Owner</th>
+          <th>Priority</th><th>Status</th><th>Due Date</th>
+          <th>Notes</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="empty-state" id="tasks-empty" style="display:none">
+      <div class="icon">📋</div>
+      <p>No tasks yet. Click <strong>+ Add Task</strong> to get started.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TAB: QUERIES
+============================================================ -->
+<div class="section" id="tab-queries">
+  <div class="section-header">
+    <div class="section-title">Contact Us Queries</div>
+    <div class="section-actions">
+      <input class="search-box" placeholder="Search queries..." oninput="filterTable('queries-table', this.value)"/>
+      <button class="btn btn-orange" onclick="openModal('queries')">+ Log Query</button>
+      <button class="btn btn-outline" onclick="exportCSV('queries')">Export CSV</button>
+    </div>
+  </div>
+  <div class="stats-bar" id="queries-stats"></div>
+  <div class="table-wrap">
+    <div class="loading" id="queries-loading">Loading...</div>
+    <table id="queries-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Date Received</th><th>Name</th><th>Email</th>
+          <th>Subject</th><th>Assigned To</th><th>Response Date</th>
+          <th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="empty-state" id="queries-empty" style="display:none">
+      <div class="icon">📬</div>
+      <p>No queries logged yet.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TAB: PAPERS
+============================================================ -->
+<div class="section" id="tab-papers">
+  <div class="section-header">
+    <div class="section-title">Paper Review Tracker</div>
+    <div class="section-actions">
+      <input class="search-box" placeholder="Search papers..." oninput="filterTable('papers-table', this.value)"/>
+      <button class="btn btn-orange" onclick="openModal('papers')">+ Add Paper</button>
+      <button class="btn btn-outline" onclick="exportCSV('papers')">Export CSV</button>
+    </div>
+  </div>
+  <div class="stats-bar" id="papers-stats"></div>
+  <div class="table-wrap">
+    <div class="loading" id="papers-loading">Loading...</div>
+    <table id="papers-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Paper Title</th><th>Authors</th><th>Assigned Reviewer</th>
+          <th>Review Due</th><th>Days Left</th><th>Review Status</th>
+          <th>Decision</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="empty-state" id="papers-empty" style="display:none">
+      <div class="icon">📄</div>
+      <p>No papers assigned yet.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TAB: TEAM
+============================================================ -->
+<div class="section" id="tab-team">
+  <div class="section-header">
+    <div class="section-title">Team Directory</div>
+    <div class="section-actions">
+      <input class="search-box" placeholder="Search team..." oninput="filterTable('team-table', this.value)"/>
+      <button class="btn btn-orange" onclick="openModal('team')">+ Add Member</button>
+      <button class="btn btn-outline" onclick="exportCSV('team')">Export CSV</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <div class="loading" id="team-loading">Loading...</div>
+    <table id="team-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Name</th><th>Role</th><th>Affiliation</th>
+          <th>Email</th><th>Area of Responsibility</th>
+          <th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="empty-state" id="team-empty" style="display:none">
+      <div class="icon">👥</div>
+      <p>No team members added yet.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TAB: SPONSORS
+============================================================ -->
+<div class="section" id="tab-sponsors">
+  <div class="section-header">
+    <div class="section-title">Sponsors, Patrons &amp; Supporters Pipeline</div>
+    <div class="section-actions">
+      <input class="search-box" placeholder="Search sponsors..." oninput="filterTable('sponsors-table', this.value)"/>
+      <button class="btn btn-orange" onclick="openModal('sponsors')">+ Add Sponsor</button>
+      <button class="btn btn-outline" onclick="exportCSV('sponsors')">Export CSV</button>
+    </div>
+  </div>
+  <div class="stats-bar" id="sponsors-stats"></div>
+  <div class="table-wrap">
+    <div class="loading" id="sponsors-loading">Loading...</div>
+    <table id="sponsors-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Organization</th><th>Tier</th><th>Contact</th>
+          <th>Email</th><th>Status</th><th>Agreement</th>
+          <th>Logo</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="empty-state" id="sponsors-empty" style="display:none">
+      <div class="icon">🤝</div>
+      <p>No sponsors tracked yet.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL
+============================================================ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Add Item</div>
+    <div id="modal-form-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveRow()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ================================================================
+// CONFIG — stored in localStorage
+// ================================================================
+let SCRIPT_URL = localStorage.getItem('iget_script_url') || '';
+let currentTab = 'tasks';
+let editingId  = null;
+let cache      = { tasks: [], queries: [], papers: [], team: [], sponsors: [] };
+
+// ================================================================
+// INIT
+// ================================================================
+window.addEventListener('DOMContentLoaded', () => {
+  if (SCRIPT_URL) {
+    document.getElementById('script-url-input').value = SCRIPT_URL;
+    document.getElementById('setup-banner').style.display = 'none';
+    ping().then(() => loadTab('tasks'));
+  }
+});
+
+function saveScriptUrl() {
+  const val = document.getElementById('script-url-input').value.trim();
+  if (!val.startsWith('https://')) { toast('Please enter a valid URL', true); return; }
+  SCRIPT_URL = val;
+  localStorage.setItem('iget_script_url', SCRIPT_URL);
+  document.getElementById('setup-banner').style.display = 'none';
+  ping().then(() => loadTab('tasks'));
+}
+
+// ================================================================
+// API CALLS
+// ================================================================
+async function api(action, tab, extra = {}) {
+  if (!SCRIPT_URL) { toast('Connect to Google Sheets first', true); return null; }
+  const body = { action, tab, ...extra };
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  } catch (e) {
+    // Fallback: GET with params (CORS workaround)
+    try {
+      const params = new URLSearchParams({ action, tab });
+      const res = await fetch(SCRIPT_URL + '?' + params);
+      return await res.json();
+    } catch (e2) {
+      toast('Connection error. Check your URL.', true);
+      return null;
+    }
+  }
+}
+
+async function ping() {
+  const dot   = document.getElementById('conn-dot');
+  const label = document.getElementById('conn-label');
+  const res   = await api('ping', 'tasks');
+  if (res && res.success) {
+    dot.classList.add('connected');
+    label.textContent = 'Connected to Google Sheets';
+  } else {
+    dot.classList.remove('connected');
+    label.textContent = 'Connection failed';
+  }
+}
+
+// ================================================================
+// TAB SWITCHING
+// ================================================================
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  currentTab = tab;
+  loadTab(tab);
+}
+
+async function loadTab(tab) {
+  const loading = document.getElementById(tab + '-loading');
+  const table   = document.getElementById(tab + '-table');
+  const empty   = document.getElementById(tab + '-empty');
+  if (loading) loading.style.display = 'block';
+  if (table)   table.style.display   = 'none';
+  if (empty)   empty.style.display   = 'none';
+
+  const res = await api('getAll', tab);
+  if (!res || !res.success) {
+    if (loading) loading.textContent = 'Failed to load. Check connection.';
+    return;
+  }
+  cache[tab] = res.data || [];
+  if (loading) loading.style.display = 'none';
+  renderTable(tab, cache[tab]);
+  renderStats(tab, cache[tab]);
+}
+
+// ================================================================
+// RENDER TABLES
+// ================================================================
+function renderTable(tab, rows) {
+  const table = document.getElementById(tab + '-table');
+  const empty = document.getElementById(tab + '-empty');
+  const tbody = table.querySelector('tbody');
+  tbody.innerHTML = '';
+
+  if (!rows.length) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = rowHTML(tab, row);
+    tbody.appendChild(tr);
+  });
+}
+
+function rowHTML(tab, r) {
+  const actions = `
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-outline btn-sm" onclick='openEditModal("${tab}", ${JSON.stringify(r).replace(/'/g, "&#39;")})'>Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteRow('${tab}', '${r.ID}')">Del</button>
+    </div>`;
+
+  if (tab === 'tasks') return `
+    <td><span class="badge ${catBadge(r['Category'])}">${r['Category']||''}</span></td>
+    <td>${r['Task']||''}</td>
+    <td>${r['Owner']||''}</td>
+    <td><span class="badge ${priBadge(r['Priority'])}">${r['Priority']||''}</span></td>
+    <td><span class="badge ${statusBadge(r['Status'])}">${r['Status']||''}</span></td>
+    <td>${r['Due Date']||''}</td>
+    <td style="max-width:180px;font-size:12px;color:var(--text-muted)">${r['Notes']||''}</td>
+    <td>${actions}</td>`;
+
+  if (tab === 'queries') return `
+    <td>${r['Date Received']||''}</td>
+    <td>${r['Name']||''}</td>
+    <td style="font-size:12px">${r['Email']||''}</td>
+    <td>${r['Subject']||''}</td>
+    <td>${r['Assigned To']||''}</td>
+    <td>${r['Response Date']||''}</td>
+    <td><span class="badge ${queryStatusBadge(r['Status'])}">${r['Status']||''}</span></td>
+    <td>${actions}</td>`;
+
+  if (tab === 'papers') {
+    const days = daysLeft(r['Review Due Date']);
+    const daysBadge = days === null ? '' :
+      days < 0  ? `<span class="badge badge-red">Overdue ${Math.abs(days)}d</span>` :
+      days <= 3 ? `<span class="badge badge-orange">${days}d left</span>` :
+                  `<span class="badge badge-green">${days}d left</span>`;
+    return `
+    <td>${r['Paper Title']||''}</td>
+    <td style="font-size:12px">${r['Authors']||''}</td>
+    <td>${r['Assigned Reviewer']||''}</td>
+    <td>${r['Review Due Date']||''}</td>
+    <td>${daysBadge}</td>
+    <td><span class="badge ${reviewBadge(r['Review Status'])}">${r['Review Status']||''}</span></td>
+    <td><span class="badge ${decisionBadge(r['Decision'])}">${r['Decision']||''}</span></td>
+    <td>${actions}</td>`;
+  }
+
+  if (tab === 'team') return `
+    <td><strong>${r['Name']||''}</strong></td>
+    <td>${r['Role']||''}</td>
+    <td style="font-size:12px">${r['Affiliation']||''}</td>
+    <td style="font-size:12px">${r['Email']||''}</td>
+    <td style="font-size:12px">${r['Area of Responsibility']||''}</td>
+    <td><span class="badge ${memberBadge(r['Status'])}">${r['Status']||''}</span></td>
+    <td>${actions}</td>`;
+
+  if (tab === 'sponsors') return `
+    <td><strong>${r['Organization']||''}</strong></td>
+    <td><span class="badge ${tierBadge(r['Tier'])}">${r['Tier']||''}</span></td>
+    <td>${r['Contact Person']||''}</td>
+    <td style="font-size:12px">${r['Email']||''}</td>
+    <td><span class="badge ${sponsorStatusBadge(r['Approach Status'])}">${r['Approach Status']||''}</span></td>
+    <td>${r['Agreement Signed']||''}</td>
+    <td>${r['Logo Received']||''}</td>
+    <td>${actions}</td>`;
+
+  return '';
+}
+
+// ================================================================
+// STATS BARS
+// ================================================================
+function renderStats(tab, rows) {
+  const el = document.getElementById(tab + '-stats');
+  if (!el) return;
+
+  if (tab === 'tasks') {
+    const done    = rows.filter(r => r['Status'] === 'Done').length;
+    const blocked = rows.filter(r => r['Status'] === 'Blocked').length;
+    const high    = rows.filter(r => r['Priority'] === 'High').length;
+    el.innerHTML = chip(rows.length, 'Total') + chip(done, 'Done', 'var(--green)') +
+      chip(blocked, 'Blocked', 'var(--red)') + chip(high, 'High Priority', 'var(--ieee-orange)');
+  }
+  if (tab === 'queries') {
+    const open = rows.filter(r => r['Status'] !== 'Closed').length;
+    const newQ = rows.filter(r => r['Status'] === 'New').length;
+    el.innerHTML = chip(rows.length, 'Total') + chip(newQ, 'New', 'var(--ieee-orange)') +
+      chip(open, 'Open', 'var(--ieee-blue-lt)');
+  }
+  if (tab === 'papers') {
+    const late = rows.filter(r => daysLeft(r['Review Due Date']) < 0).length;
+    const done = rows.filter(r => r['Review Status'] === 'Submitted').length;
+    el.innerHTML = chip(rows.length, 'Total') + chip(done, 'Submitted', 'var(--green)') +
+      chip(late, 'Overdue', 'var(--red)');
+  }
+  if (tab === 'sponsors') {
+    const confirmed = rows.filter(r => r['Approach Status'] === 'Confirmed').length;
+    el.innerHTML = chip(rows.length, 'Total') + chip(confirmed, 'Confirmed', 'var(--green)');
+  }
+}
+
+function chip(num, label, color) {
+  return `<div class="stat-chip"><span class="num" style="${color ? 'color:'+color : ''}">${num}</span>${label}</div>`;
+}
+
+// ================================================================
+// MODAL FORMS
+// ================================================================
+const FORMS = {
+  tasks: `
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Category</label>
+        <select name="Category">
+          <option>Website</option><option>Content</option><option>Speakers & Keynotes</option>
+          <option>Sponsors & Patrons</option><option>Registration</option>
+          <option>Important Dates</option><option>Communications</option>
+          <option>Committee & Volunteers</option><option>Logistics & Venue</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Owner</label>
+        <select name="Owner">
+          <option>Brij</option><option>Gora</option><option>Khanh</option><option>TBD</option><option>All</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Task</label>
+        <input type="text" name="Task" placeholder="Describe the task"/>
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select name="Priority">
+          <option>High</option><option>Medium</option><option>Low</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="Status">
+          <option>Not Started</option><option>In Progress</option>
+          <option>Blocked</option><option>Done</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Due Date</label>
+        <input type="date" name="Due Date"/>
+      </div>
+      <div class="form-group full">
+        <label>Notes</label>
+        <textarea name="Notes" placeholder="Any additional context..."></textarea>
+      </div>
+    </div>`,
+
+  queries: `
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Date Received</label>
+        <input type="date" name="Date Received"/>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="Status">
+          <option>New</option><option>In Progress</option>
+          <option>Responded</option><option>Closed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="Name" placeholder="Sender's name"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="Email" placeholder="sender@email.com"/>
+      </div>
+      <div class="form-group full">
+        <label>Subject</label>
+        <input type="text" name="Subject" placeholder="Query subject"/>
+      </div>
+      <div class="form-group full">
+        <label>Query Summary</label>
+        <textarea name="Query Summary" placeholder="What did they ask?"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Assigned To</label>
+        <select name="Assigned To">
+          <option>Brij</option><option>Gora</option><option>Khanh</option><option>TBD</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Response Date</label>
+        <input type="date" name="Response Date"/>
+      </div>
+      <div class="form-group full">
+        <label>Response Summary</label>
+        <textarea name="Response Summary" placeholder="How was it resolved?"></textarea>
+      </div>
+    </div>`,
+
+  papers: `
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Paper Title</label>
+        <input type="text" name="Paper Title" placeholder="Full paper title"/>
+      </div>
+      <div class="form-group full">
+        <label>Authors</label>
+        <input type="text" name="Authors" placeholder="Author names"/>
+      </div>
+      <div class="form-group">
+        <label>Submission Date</label>
+        <input type="date" name="Submission Date"/>
+      </div>
+      <div class="form-group">
+        <label>Assigned Reviewer</label>
+        <input type="text" name="Assigned Reviewer" placeholder="Reviewer name"/>
+      </div>
+      <div class="form-group">
+        <label>Review Due Date</label>
+        <input type="date" name="Review Due Date"/>
+      </div>
+      <div class="form-group">
+        <label>Review Status</label>
+        <select name="Review Status">
+          <option>Assigned</option><option>In Progress</option>
+          <option>Submitted</option><option>Late</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Decision</label>
+        <select name="Decision">
+          <option>Pending</option><option>Accept</option><option>Minor Revision</option>
+          <option>Major Revision</option><option>Reject</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Notes</label>
+        <textarea name="Notes" placeholder="Any notes for this paper..."></textarea>
+      </div>
+    </div>`,
+
+  team: `
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="Name" placeholder="Full name"/>
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" name="Role" placeholder="e.g. General Chair"/>
+      </div>
+      <div class="form-group">
+        <label>Affiliation</label>
+        <input type="text" name="Affiliation" placeholder="University / Company"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="Email" placeholder="email@org.com"/>
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="Phone" placeholder="+1 xxx xxx xxxx"/>
+      </div>
+      <div class="form-group">
+        <label>IEEE Member Number</label>
+        <input type="text" name="IEEE Member Number" placeholder="Optional"/>
+      </div>
+      <div class="form-group full">
+        <label>Area of Responsibility</label>
+        <input type="text" name="Area of Responsibility" placeholder="e.g. Website, Paper Reviews"/>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="Status">
+          <option>Active</option><option>On Leave</option><option>Inactive</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Availability Notes</label>
+        <textarea name="Availability Notes" placeholder="Any notes on availability..."></textarea>
+      </div>
+    </div>`,
+
+  sponsors: `
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Organization</label>
+        <input type="text" name="Organization" placeholder="Organization name"/>
+      </div>
+      <div class="form-group">
+        <label>Tier</label>
+        <select name="Tier">
+          <option>Sponsor</option><option>Patron</option><option>Supporter</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Approach Status</label>
+        <select name="Approach Status">
+          <option>Approached</option><option>In Discussion</option>
+          <option>Confirmed</option><option>Declined</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Contact Person</label>
+        <input type="text" name="Contact Person" placeholder="Name"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="Email" placeholder="contact@org.com"/>
+      </div>
+      <div class="form-group">
+        <label>Amount / In-Kind</label>
+        <input type="text" name="Amount / In-Kind" placeholder="e.g. $500 or In-Kind"/>
+      </div>
+      <div class="form-group">
+        <label>Agreement Signed</label>
+        <select name="Agreement Signed">
+          <option>No</option><option>Yes</option><option>Pending</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Logo Received</label>
+        <select name="Logo Received">
+          <option>No</option><option>Yes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Published on Site</label>
+        <select name="Published on Site">
+          <option>No</option><option>Yes</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Notes</label>
+        <textarea name="Notes" placeholder="Any additional notes..."></textarea>
+      </div>
+    </div>`
+};
+
+function openModal(tab, title) {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Add ' + tabLabel(tab);
+  document.getElementById('modal-form-body').innerHTML = FORMS[tab];
+  document.getElementById('modal-save-btn').textContent = 'Save';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openEditModal(tab, row) {
+  editingId = row['ID'];
+  document.getElementById('modal-title').textContent = 'Edit ' + tabLabel(tab);
+  document.getElementById('modal-form-body').innerHTML = FORMS[tab];
+  // Populate fields
+  document.querySelectorAll('#modal-form-body [name]').forEach(el => {
+    const key = el.getAttribute('name');
+    if (row[key] !== undefined) el.value = row[key];
+  });
+  document.getElementById('modal-save-btn').textContent = 'Update';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  editingId = null;
+}
+
+async function saveRow() {
+  const fields = {};
+  document.querySelectorAll('#modal-form-body [name]').forEach(el => {
+    fields[el.getAttribute('name')] = el.value;
+  });
+
+  let res;
+  if (editingId) {
+    res = await api('updateRow', currentTab, { id: editingId, row: fields });
+    if (res && res.success) toast('Updated successfully.');
+  } else {
+    res = await api('addRow', currentTab, { row: fields });
+    if (res && res.success) toast('Added successfully.');
+  }
+  if (res && res.success) {
+    closeModal();
+    loadTab(currentTab);
+  } else {
+    toast('Save failed. Please try again.', true);
+  }
+}
+
+async function deleteRow(tab, id) {
+  if (!confirm('Delete this entry? This cannot be undone.')) return;
+  const res = await api('deleteRow', tab, { id });
+  if (res && res.success) {
+    toast('Deleted.');
+    loadTab(tab);
+  } else {
+    toast('Delete failed.', true);
+  }
+}
+
+// ================================================================
+// SEARCH / FILTER
+// ================================================================
+function filterTable(tableId, query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('#' + tableId + ' tbody tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// ================================================================
+// CSV EXPORT
+// ================================================================
+function exportCSV(tab) {
+  const rows = cache[tab];
+  if (!rows.length) { toast('Nothing to export.', true); return; }
+  const headers = Object.keys(rows[0]);
+  const csv = [headers.join(','), ...rows.map(r =>
+    headers.map(h => '"' + String(r[h] || '').replace(/"/g, '""') + '"').join(',')
+  )].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'iget-' + tab + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+}
+
+// ================================================================
+// HELPERS
+// ================================================================
+function daysLeft(dateStr) {
+  if (!dateStr) return null;
+  const due  = new Date(dateStr);
+  const now  = new Date();
+  due.setHours(0,0,0,0); now.setHours(0,0,0,0);
+  return Math.round((due - now) / 86400000);
+}
+
+function tabLabel(tab) {
+  return { tasks:'Task', queries:'Query', papers:'Paper', team:'Team Member', sponsors:'Sponsor' }[tab] || tab;
+}
+
+// Badge color helpers
+function catBadge(c) {
+  const m = { 'Website':'badge-blue','Content':'badge-purple','Speakers & Keynotes':'badge-orange',
+    'Sponsors & Patrons':'badge-green','Registration':'badge-yellow','Important Dates':'badge-red',
+    'Communications':'badge-blue','Committee & Volunteers':'badge-purple','Logistics & Venue':'badge-gray' };
+  return m[c] || 'badge-gray';
+}
+function priBadge(p) {
+  return { High:'badge-red', Medium:'badge-yellow', Low:'badge-green' }[p] || 'badge-gray';
+}
+function statusBadge(s) {
+  return { 'Not Started':'badge-gray','In Progress':'badge-blue','Blocked':'badge-red','Done':'badge-green' }[s] || 'badge-gray';
+}
+function queryStatusBadge(s) {
+  return { 'New':'badge-orange','In Progress':'badge-blue','Responded':'badge-purple','Closed':'badge-green' }[s] || 'badge-gray';
+}
+function reviewBadge(s) {
+  return { 'Assigned':'badge-blue','In Progress':'badge-yellow','Submitted':'badge-green','Late':'badge-red' }[s] || 'badge-gray';
+}
+function decisionBadge(s) {
+  return { 'Pending':'badge-gray','Accept':'badge-green','Minor Revision':'badge-yellow',
+    'Major Revision':'badge-orange','Reject':'badge-red' }[s] || 'badge-gray';
+}
+function memberBadge(s) {
+  return { 'Active':'badge-green','On Leave':'badge-yellow','Inactive':'badge-gray' }[s] || 'badge-gray';
+}
+function tierBadge(t) {
+  return { 'Sponsor':'badge-blue','Patron':'badge-purple','Supporter':'badge-green' }[t] || 'badge-gray';
+}
+function sponsorStatusBadge(s) {
+  return { 'Approached':'badge-gray','In Discussion':'badge-yellow','Confirmed':'badge-green','Declined':'badge-red' }[s] || 'badge-gray';
+}
+
+// Toast
+function toast(msg, isError) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (isError ? ' error' : '');
+  setTimeout(() => { el.className = ''; }, 3000);
+}
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
