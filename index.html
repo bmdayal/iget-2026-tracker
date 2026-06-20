@@ -22,200 +22,120 @@
     --radius:       10px;
     --shadow:       0 2px 12px rgba(26,58,107,0.08);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
 
-  body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 14px;
-    min-height: 100vh;
+  /* ---- LOGIN SCREEN ---- */
+  #login-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #0d2147 0%, #1a3a6b 60%, #2a62c0 100%);
   }
+  .login-card {
+    background: #fff; border-radius: 16px; padding: 40px 36px;
+    width: 100%; max-width: 400px; box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+  }
+  .login-logo {
+    text-align: center; margin-bottom: 28px;
+  }
+  .login-logo .brand {
+    font-size: 28px; font-weight: 800; color: var(--ieee-blue); letter-spacing: -0.5px;
+  }
+  .login-logo .brand span { color: var(--ieee-orange); }
+  .login-logo .sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .login-form { display: flex; flex-direction: column; gap: 16px; }
+  .login-form label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 5px; }
+  .login-form select, .login-form input {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit; outline: none;
+    transition: border-color 0.15s;
+  }
+  .login-form select:focus, .login-form input:focus { border-color: var(--ieee-blue-lt); }
+  .login-btn {
+    background: var(--ieee-blue); color: #fff; border: none; padding: 13px;
+    border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: background 0.2s; margin-top: 4px;
+  }
+  .login-btn:hover { background: var(--ieee-blue-lt); }
+  .login-error { background: #fee2e2; color: #b91c1c; padding: 10px 14px; border-radius: 7px; font-size: 13px; display: none; }
+  .setup-link { text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted); }
+  .setup-link a { color: var(--ieee-blue-lt); cursor: pointer; text-decoration: underline; }
 
-  /* ---- Header ---- */
+  /* ---- SETUP PANEL ---- */
+  #setup-panel {
+    background: #fef3c7; border-top: 3px solid var(--ieee-orange);
+    padding: 12px 20px; display: none; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  #setup-panel input { flex: 1; min-width: 260px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: monospace; }
+  #setup-panel button { background: var(--ieee-blue); color: #fff; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; white-space: nowrap; }
+
+  /* ---- APP SHELL ---- */
+  #app-shell { display: none; }
   .app-header {
-    background: var(--ieee-blue);
-    color: #fff;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background: var(--ieee-blue); color: #fff; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px; position: sticky; top: 0; z-index: 100;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
-  .app-header .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: 0.02em;
+  .app-header .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+  .app-header .logo span { color: var(--ieee-orange); }
+  .user-info { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .user-badge {
+    background: rgba(255,255,255,0.15); border-radius: 20px;
+    padding: 4px 12px; display: flex; align-items: center; gap: 6px; font-size: 12px;
   }
-  .app-header .logo span {
-    color: var(--ieee-orange);
-  }
-  .conn-status {
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    opacity: 0.85;
-  }
-  .conn-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #f87171;
-  }
+  .role-pip { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; }
+  .role-pip.editor { background: #facc15; }
+  .role-pip.viewer { background: #94a3b8; }
+  .conn-dot { width: 7px; height: 7px; border-radius: 50%; background: #f87171; }
   .conn-dot.connected { background: #4ade80; }
+  .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+  .logout-btn:hover { background: rgba(255,255,255,0.1); }
 
-  /* ---- Setup Banner ---- */
-  #setup-banner {
-    background: #fef3c7;
-    border-bottom: 2px solid var(--ieee-orange);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13px;
-  }
-  #setup-banner input {
-    flex: 1;
-    padding: 7px 12px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 13px;
-    font-family: monospace;
-  }
-  #setup-banner button {
-    background: var(--ieee-blue);
-    color: #fff;
-    border: none;
-    padding: 7px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-
-  /* ---- Tabs ---- */
+  /* ---- TABS ---- */
   .tabs-bar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 24px; display: flex; gap: 0; overflow-x: auto;
   }
   .tab-btn {
-    padding: 14px 20px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    border-bottom: 3px solid transparent;
-    white-space: nowrap;
-    transition: color 0.15s, border-color 0.15s;
+    padding: 14px 18px; border: none; background: none; cursor: pointer;
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    border-bottom: 3px solid transparent; white-space: nowrap; transition: color 0.15s, border-color 0.15s;
   }
-  .tab-btn.active {
-    color: var(--ieee-blue);
-    border-bottom-color: var(--ieee-orange);
-  }
+  .tab-btn.active { color: var(--ieee-blue); border-bottom-color: var(--ieee-orange); }
   .tab-btn:hover { color: var(--ieee-blue); }
+  .tab-btn.admin-only { display: none; }
 
-  /* ---- Section ---- */
+  /* ---- SECTIONS ---- */
   .section { display: none; padding: 24px; }
   .section.active { display: block; }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .section-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--ieee-blue);
-  }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .section-title { font-size: 18px; font-weight: 700; color: var(--ieee-blue); }
   .section-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-  /* ---- Buttons ---- */
-  .btn {
-    padding: 8px 16px;
-    border-radius: 7px;
-    border: none;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    transition: opacity 0.15s;
-  }
+  /* ---- BUTTONS ---- */
+  .btn { padding: 8px 16px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity 0.15s; }
   .btn:hover { opacity: 0.85; }
-  .btn-primary   { background: var(--ieee-blue);   color: #fff; }
-  .btn-orange    { background: var(--ieee-orange);  color: #fff; }
-  .btn-outline   { background: #fff; border: 1.5px solid var(--border); color: var(--text); }
-  .btn-danger    { background: var(--red);          color: #fff; }
-  .btn-sm        { padding: 4px 10px; font-size: 12px; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: var(--ieee-blue); color: #fff; }
+  .btn-orange  { background: var(--ieee-orange); color: #fff; }
+  .btn-outline { background: #fff; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-danger  { background: var(--red); color: #fff; }
+  .btn-sm      { padding: 4px 10px; font-size: 12px; }
 
-  /* ---- Search ---- */
-  .search-box {
-    padding: 8px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
-    font-size: 13px;
-    width: 220px;
-    outline: none;
-  }
+  /* ---- SEARCH ---- */
+  .search-box { padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; width: 220px; outline: none; }
   .search-box:focus { border-color: var(--ieee-blue-lt); }
 
-  /* ---- Table ---- */
-  .table-wrap {
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow-x: auto;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  th {
-    background: var(--ieee-blue);
-    color: #fff;
-    padding: 11px 14px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
-  td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-    max-width: 260px;
-  }
+  /* ---- TABLE ---- */
+  .table-wrap { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--ieee-blue); color: #fff; padding: 11px 14px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: 0.04em; white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; max-width: 240px; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--surface-2); }
 
-  /* ---- Badges ---- */
-  .badge {
-    display: inline-block;
-    padding: 3px 9px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    white-space: nowrap;
-  }
+  /* ---- BADGES ---- */
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; white-space: nowrap; }
   .badge-green  { background: #dcfce7; color: #15803d; }
   .badge-red    { background: #fee2e2; color: #b91c1c; }
   .badge-yellow { background: #fef3c7; color: #b45309; }
@@ -224,331 +144,260 @@
   .badge-gray   { background: #f3f4f6; color: #4b5563; }
   .badge-orange { background: #ffedd5; color: #c2410c; }
 
-  /* ---- Modal ---- */
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
+  /* ---- MODAL ---- */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: #fff;
-    border-radius: 12px;
-    padding: 28px;
-    width: 100%;
-    max-width: 560px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  }
-  .modal-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--ieee-blue);
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--ieee-orange);
-  }
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
+  .modal { background: #fff; border-radius: 12px; padding: 28px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .modal-title { font-size: 17px; font-weight: 700; color: var(--ieee-blue); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--ieee-orange); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group.full { grid-column: 1 / -1; }
-  .form-group label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    padding: 8px 11px;
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
-    font-size: 13px;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus { border-color: var(--ieee-blue-lt); }
+  .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--ieee-blue-lt); }
   .form-group textarea { resize: vertical; min-height: 70px; }
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
 
-  /* ---- Toast ---- */
-  #toast {
-    position: fixed;
-    bottom: 24px; right: 24px;
-    background: var(--ieee-blue);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    z-index: 999;
-    transform: translateY(80px);
-    opacity: 0;
-    transition: all 0.3s;
+  /* ---- USERS PAGE ---- */
+  .users-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 4px; }
+  .user-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px;
   }
+  .user-card-header { display: flex; align-items: center; gap: 12px; }
+  .user-avatar {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--ieee-blue);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+  }
+  .user-card-name { font-weight: 700; font-size: 15px; color: var(--text); }
+  .user-card-email { font-size: 12px; color: var(--text-muted); }
+  .user-card-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .user-card-actions { display: flex; gap: 8px; margin-top: 4px; }
+
+  /* ---- SEED PANEL ---- */
+  .seed-panel { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+  .seed-panel h3 { font-size: 14px; color: #92400e; margin-bottom: 8px; }
+  .seed-panel p { font-size: 12px; color: #78350f; margin-bottom: 12px; }
+  .seed-row { display: flex; gap: 8px; align-items: center; }
+  .seed-row input { flex: 1; padding: 8px 11px; border: 1px solid #fcd34d; border-radius: 7px; font-size: 13px; }
+
+  /* ---- STATS ---- */
+  .stats-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .stat-chip .num { font-size: 18px; font-weight: 800; color: var(--ieee-blue); }
+
+  /* ---- MISC ---- */
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .loading { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+  #toast { position: fixed; bottom: 24px; right: 24px; background: var(--ieee-blue); color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.error { background: var(--red); }
-
-  /* ---- Empty state ---- */
-  .empty-state {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--text-muted);
-  }
-  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-state p { font-size: 14px; }
-
-  /* ---- Loading ---- */
-  .loading {
-    text-align: center;
-    padding: 32px;
-    color: var(--text-muted);
-    font-size: 13px;
-  }
-
-  /* ---- Stats bar ---- */
-  .stats-bar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-  .stat-chip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .stat-chip .num {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--ieee-blue);
-  }
-
   @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }
     .section { padding: 16px; }
     .app-header { padding: 0 16px; }
     .tabs-bar { padding: 0 8px; }
-    .tab-btn { padding: 12px 14px; font-size: 12px; }
+    .tab-btn { padding: 12px 12px; font-size: 12px; }
+    .search-box { width: 140px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="app-header">
-  <div class="logo">
-    <span>iGET</span> 2026 — Conference Tracker
-  </div>
-  <div class="conn-status">
-    <div class="conn-dot" id="conn-dot"></div>
-    <span id="conn-label">Not connected</span>
-  </div>
-</header>
-
-<!-- Setup Banner -->
-<div id="setup-banner">
-  <span>🔗</span>
-  <strong>Paste your Apps Script Web App URL:</strong>
-  <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/...../exec"/>
-  <button onclick="saveScriptUrl()">Connect</button>
-</div>
-
-<!-- Tabs -->
-<nav class="tabs-bar">
-  <button class="tab-btn active" onclick="switchTab('tasks', this)">📋 Tasks</button>
-  <button class="tab-btn" onclick="switchTab('queries', this)">📬 Contact Queries</button>
-  <button class="tab-btn" onclick="switchTab('papers', this)">📄 Paper Reviews</button>
-  <button class="tab-btn" onclick="switchTab('team', this)">👥 Team</button>
-  <button class="tab-btn" onclick="switchTab('sponsors', this)">🤝 Sponsors</button>
-</nav>
-
 <!-- ============================================================
-     TAB: TASKS
+     LOGIN SCREEN
 ============================================================ -->
-<div class="section active" id="tab-tasks">
-  <div class="section-header">
-    <div class="section-title">Conference Tasks</div>
-    <div class="section-actions">
-      <input class="search-box" placeholder="Search tasks..." oninput="filterTable('tasks-table', this.value)"/>
-      <button class="btn btn-orange" onclick="openModal('tasks')">+ Add Task</button>
-      <button class="btn btn-outline" onclick="exportCSV('tasks')">Export CSV</button>
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="brand"><span>iGET</span> 2026</div>
+      <div class="sub">Conference Tracker &nbsp;·&nbsp; Internal Use Only</div>
     </div>
-  </div>
-  <div class="stats-bar" id="tasks-stats"></div>
-  <div class="table-wrap">
-    <div class="loading" id="tasks-loading">Loading...</div>
-    <table id="tasks-table" style="display:none">
-      <thead>
-        <tr>
-          <th>Category</th><th>Task</th><th>Owner</th>
-          <th>Priority</th><th>Status</th><th>Due Date</th>
-          <th>Notes</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="empty-state" id="tasks-empty" style="display:none">
-      <div class="icon">📋</div>
-      <p>No tasks yet. Click <strong>+ Add Task</strong> to get started.</p>
+    <div class="login-form">
+      <div>
+        <label>Your Name</label>
+        <select id="login-name">
+          <option value="">— Select your name —</option>
+        </select>
+      </div>
+      <div>
+        <label>PIN</label>
+        <input type="password" id="login-pin" placeholder="Enter your PIN" maxlength="8"
+               onkeydown="if(event.key==='Enter') doLogin()"/>
+      </div>
+      <div id="login-error" class="login-error"></div>
+      <button class="login-btn" onclick="doLogin()">Sign In</button>
+    </div>
+    <div class="setup-link">
+      First time? <a onclick="toggleSetup()">Configure Google Sheets connection</a>
+    </div>
+    <!-- Setup panel inside login card -->
+    <div id="setup-panel" style="margin-top:16px; background:#fef3c7; border-radius:8px; padding:14px; display:none; flex-direction:column; gap:8px;">
+      <strong style="font-size:12px;">Apps Script Web App URL</strong>
+      <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/...../exec" style="width:100%; padding:8px 10px; border:1px solid #fcd34d; border-radius:6px; font-size:12px; font-family:monospace;"/>
+      <button onclick="saveScriptUrl()" style="background:var(--ieee-blue);color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;">Save & Connect</button>
     </div>
   </div>
 </div>
 
 <!-- ============================================================
-     TAB: QUERIES
+     APP SHELL
 ============================================================ -->
-<div class="section" id="tab-queries">
-  <div class="section-header">
-    <div class="section-title">Contact Us Queries</div>
-    <div class="section-actions">
-      <input class="search-box" placeholder="Search queries..." oninput="filterTable('queries-table', this.value)"/>
-      <button class="btn btn-orange" onclick="openModal('queries')">+ Log Query</button>
-      <button class="btn btn-outline" onclick="exportCSV('queries')">Export CSV</button>
-    </div>
-  </div>
-  <div class="stats-bar" id="queries-stats"></div>
-  <div class="table-wrap">
-    <div class="loading" id="queries-loading">Loading...</div>
-    <table id="queries-table" style="display:none">
-      <thead>
-        <tr>
-          <th>Date Received</th><th>Name</th><th>Email</th>
-          <th>Subject</th><th>Assigned To</th><th>Response Date</th>
-          <th>Status</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="empty-state" id="queries-empty" style="display:none">
-      <div class="icon">📬</div>
-      <p>No queries logged yet.</p>
-    </div>
-  </div>
-</div>
+<div id="app-shell">
 
-<!-- ============================================================
-     TAB: PAPERS
-============================================================ -->
-<div class="section" id="tab-papers">
-  <div class="section-header">
-    <div class="section-title">Paper Review Tracker</div>
-    <div class="section-actions">
-      <input class="search-box" placeholder="Search papers..." oninput="filterTable('papers-table', this.value)"/>
-      <button class="btn btn-orange" onclick="openModal('papers')">+ Add Paper</button>
-      <button class="btn btn-outline" onclick="exportCSV('papers')">Export CSV</button>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo"><span>iGET</span> 2026 Conference Tracker</div>
+    <div class="user-info">
+      <div class="conn-dot" id="conn-dot"></div>
+      <div class="user-badge" id="user-badge">
+        <div class="role-pip" id="role-pip"></div>
+        <span id="user-display">—</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Sign Out</button>
     </div>
-  </div>
-  <div class="stats-bar" id="papers-stats"></div>
-  <div class="table-wrap">
-    <div class="loading" id="papers-loading">Loading...</div>
-    <table id="papers-table" style="display:none">
-      <thead>
-        <tr>
-          <th>Paper Title</th><th>Authors</th><th>Assigned Reviewer</th>
-          <th>Review Due</th><th>Days Left</th><th>Review Status</th>
-          <th>Decision</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="empty-state" id="papers-empty" style="display:none">
-      <div class="icon">📄</div>
-      <p>No papers assigned yet.</p>
-    </div>
-  </div>
-</div>
+  </header>
 
-<!-- ============================================================
-     TAB: TEAM
-============================================================ -->
-<div class="section" id="tab-team">
-  <div class="section-header">
-    <div class="section-title">Team Directory</div>
-    <div class="section-actions">
-      <input class="search-box" placeholder="Search team..." oninput="filterTable('team-table', this.value)"/>
-      <button class="btn btn-orange" onclick="openModal('team')">+ Add Member</button>
-      <button class="btn btn-outline" onclick="exportCSV('team')">Export CSV</button>
-    </div>
-  </div>
-  <div class="table-wrap">
-    <div class="loading" id="team-loading">Loading...</div>
-    <table id="team-table" style="display:none">
-      <thead>
-        <tr>
-          <th>Name</th><th>Role</th><th>Affiliation</th>
-          <th>Email</th><th>Area of Responsibility</th>
-          <th>Status</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="empty-state" id="team-empty" style="display:none">
-      <div class="icon">👥</div>
-      <p>No team members added yet.</p>
-    </div>
-  </div>
-</div>
+  <!-- Tabs -->
+  <nav class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('tasks',this)">📋 Tasks</button>
+    <button class="tab-btn" onclick="switchTab('queries',this)">📬 Queries</button>
+    <button class="tab-btn" onclick="switchTab('papers',this)">📄 Papers</button>
+    <button class="tab-btn" onclick="switchTab('team',this)">👥 Team</button>
+    <button class="tab-btn" onclick="switchTab('sponsors',this)">🤝 Sponsors</button>
+    <button class="tab-btn admin-only" id="tab-users-btn" onclick="switchTab('users',this)">⚙️ Users</button>
+  </nav>
 
-<!-- ============================================================
-     TAB: SPONSORS
-============================================================ -->
-<div class="section" id="tab-sponsors">
-  <div class="section-header">
-    <div class="section-title">Sponsors, Patrons &amp; Supporters Pipeline</div>
-    <div class="section-actions">
-      <input class="search-box" placeholder="Search sponsors..." oninput="filterTable('sponsors-table', this.value)"/>
-      <button class="btn btn-orange" onclick="openModal('sponsors')">+ Add Sponsor</button>
-      <button class="btn btn-outline" onclick="exportCSV('sponsors')">Export CSV</button>
+  <!-- TASKS -->
+  <div class="section active" id="tab-tasks">
+    <div class="section-header">
+      <div class="section-title">Conference Tasks</div>
+      <div class="section-actions">
+        <input class="search-box" placeholder="Search..." oninput="filterTable('tasks-table',this.value)"/>
+        <button class="btn btn-orange writer-only" onclick="openModal('tasks')">+ Add Task</button>
+        <button class="btn btn-outline" onclick="exportCSV('tasks')">Export CSV</button>
+      </div>
+    </div>
+    <div class="stats-bar" id="tasks-stats"></div>
+    <div class="table-wrap">
+      <div class="loading" id="tasks-loading">Loading...</div>
+      <table id="tasks-table" style="display:none">
+        <thead><tr><th>Category</th><th>Task</th><th>Owner</th><th>Priority</th><th>Status</th><th>Due Date</th><th>Notes</th><th>By</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty-state" id="tasks-empty" style="display:none"><div class="icon">📋</div><p>No tasks yet.</p></div>
     </div>
   </div>
-  <div class="stats-bar" id="sponsors-stats"></div>
-  <div class="table-wrap">
-    <div class="loading" id="sponsors-loading">Loading...</div>
-    <table id="sponsors-table" style="display:none">
-      <thead>
-        <tr>
-          <th>Organization</th><th>Tier</th><th>Contact</th>
-          <th>Email</th><th>Status</th><th>Agreement</th>
-          <th>Logo</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="empty-state" id="sponsors-empty" style="display:none">
-      <div class="icon">🤝</div>
-      <p>No sponsors tracked yet.</p>
+
+  <!-- QUERIES -->
+  <div class="section" id="tab-queries">
+    <div class="section-header">
+      <div class="section-title">Contact Us Queries</div>
+      <div class="section-actions">
+        <input class="search-box" placeholder="Search..." oninput="filterTable('queries-table',this.value)"/>
+        <button class="btn btn-orange writer-only" onclick="openModal('queries')">+ Log Query</button>
+        <button class="btn btn-outline" onclick="exportCSV('queries')">Export CSV</button>
+      </div>
+    </div>
+    <div class="stats-bar" id="queries-stats"></div>
+    <div class="table-wrap">
+      <div class="loading" id="queries-loading">Loading...</div>
+      <table id="queries-table" style="display:none">
+        <thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Subject</th><th>Assigned To</th><th>Response Date</th><th>Status</th><th>By</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty-state" id="queries-empty" style="display:none"><div class="icon">📬</div><p>No queries logged yet.</p></div>
     </div>
   </div>
-</div>
+
+  <!-- PAPERS -->
+  <div class="section" id="tab-papers">
+    <div class="section-header">
+      <div class="section-title">Paper Review Tracker</div>
+      <div class="section-actions">
+        <input class="search-box" placeholder="Search..." oninput="filterTable('papers-table',this.value)"/>
+        <button class="btn btn-orange writer-only" onclick="openModal('papers')">+ Add Paper</button>
+        <button class="btn btn-outline" onclick="exportCSV('papers')">Export CSV</button>
+      </div>
+    </div>
+    <div class="stats-bar" id="papers-stats"></div>
+    <div class="table-wrap">
+      <div class="loading" id="papers-loading">Loading...</div>
+      <table id="papers-table" style="display:none">
+        <thead><tr><th>Title</th><th>Authors</th><th>Reviewer</th><th>Due Date</th><th>Days Left</th><th>Status</th><th>Decision</th><th>By</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty-state" id="papers-empty" style="display:none"><div class="icon">📄</div><p>No papers assigned yet.</p></div>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="section" id="tab-team">
+    <div class="section-header">
+      <div class="section-title">Team Directory</div>
+      <div class="section-actions">
+        <input class="search-box" placeholder="Search..." oninput="filterTable('team-table',this.value)"/>
+        <button class="btn btn-orange writer-only" onclick="openModal('team')">+ Add Member</button>
+        <button class="btn btn-outline" onclick="exportCSV('team')">Export CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div class="loading" id="team-loading">Loading...</div>
+      <table id="team-table" style="display:none">
+        <thead><tr><th>Name</th><th>Role</th><th>Affiliation</th><th>Email</th><th>Responsibility</th><th>Status</th><th>By</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty-state" id="team-empty" style="display:none"><div class="icon">👥</div><p>No team members added yet.</p></div>
+    </div>
+  </div>
+
+  <!-- SPONSORS -->
+  <div class="section" id="tab-sponsors">
+    <div class="section-header">
+      <div class="section-title">Sponsors, Patrons &amp; Supporters Pipeline</div>
+      <div class="section-actions">
+        <input class="search-box" placeholder="Search..." oninput="filterTable('sponsors-table',this.value)"/>
+        <button class="btn btn-orange writer-only" onclick="openModal('sponsors')">+ Add Sponsor</button>
+        <button class="btn btn-outline" onclick="exportCSV('sponsors')">Export CSV</button>
+      </div>
+    </div>
+    <div class="stats-bar" id="sponsors-stats"></div>
+    <div class="table-wrap">
+      <div class="loading" id="sponsors-loading">Loading...</div>
+      <table id="sponsors-table" style="display:none">
+        <thead><tr><th>Organization</th><th>Tier</th><th>Contact</th><th>Email</th><th>Status</th><th>Agreement</th><th>Logo</th><th>By</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty-state" id="sponsors-empty" style="display:none"><div class="icon">🤝</div><p>No sponsors tracked yet.</p></div>
+    </div>
+  </div>
+
+  <!-- USERS (Admin only) -->
+  <div class="section" id="tab-users">
+    <div class="section-header">
+      <div class="section-title">User Management</div>
+      <div class="section-actions">
+        <button class="btn btn-orange" onclick="openUserModal()">+ Add User</button>
+      </div>
+    </div>
+
+    <!-- First-time seed panel -->
+    <div class="seed-panel" id="seed-panel" style="display:none">
+      <h3>⚡ First-time Setup — Create Admin Account</h3>
+      <p>No users exist yet. Create your Admin account (Brij Mohan) to get started. Choose a PIN you will remember.</p>
+      <div class="seed-row">
+        <input type="password" id="seed-pin" placeholder="Choose a PIN (4-8 digits)" maxlength="8"/>
+        <button class="btn btn-primary" onclick="seedAdmin()">Create Admin</button>
+      </div>
+    </div>
+
+    <div class="users-grid" id="users-grid"></div>
+    <div class="empty-state" id="users-empty" style="display:none"><div class="icon">👤</div><p>No users found.</p></div>
+  </div>
+
+</div><!-- end app-shell -->
 
 <!-- ============================================================
      MODAL
@@ -564,74 +413,158 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div id="toast"></div>
 
 <script>
 // ================================================================
-// CONFIG — stored in localStorage
+// STATE
 // ================================================================
-let SCRIPT_URL = localStorage.getItem('iget_script_url') || '';
-let currentTab = 'tasks';
-let editingId  = null;
-let cache      = { tasks: [], queries: [], papers: [], team: [], sponsors: [] };
+let SCRIPT_URL  = localStorage.getItem('iget_script_url') || '';
+let currentTab  = 'tasks';
+let editingId   = null;
+let editingType = null; // 'row' or 'user'
+let currentUser = JSON.parse(sessionStorage.getItem('iget_user') || 'null');
+let cache       = { tasks:[], queries:[], papers:[], team:[], sponsors:[], users:[] };
 
 // ================================================================
-// INIT
+// BOOT
 // ================================================================
-window.addEventListener('DOMContentLoaded', () => {
-  if (SCRIPT_URL) {
-    document.getElementById('script-url-input').value = SCRIPT_URL;
-    document.getElementById('setup-banner').style.display = 'none';
-    ping().then(() => loadTab('tasks'));
+window.addEventListener('DOMContentLoaded', async () => {
+  if (SCRIPT_URL) document.getElementById('script-url-input').value = SCRIPT_URL;
+
+  if (currentUser && SCRIPT_URL) {
+    showApp();
+    await loadUserList();
+    loadTab('tasks');
+  } else {
+    showLogin();
+    if (SCRIPT_URL) await loadUserList();
   }
 });
 
-function saveScriptUrl() {
+// ================================================================
+// LOGIN / LOGOUT
+// ================================================================
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app-shell').style.display    = 'none';
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-shell').style.display    = 'block';
+  applyRole();
+}
+
+async function doLogin() {
+  const name = document.getElementById('login-name').value;
+  const pin  = document.getElementById('login-pin').value;
+  const err  = document.getElementById('login-error');
+  err.style.display = 'none';
+
+  if (!name || !pin) { err.textContent = 'Please select your name and enter your PIN.'; err.style.display = 'block'; return; }
+  if (!SCRIPT_URL)   { err.textContent = 'Google Sheets not connected. Use the setup link below.'; err.style.display = 'block'; return; }
+
+  const res = await api('authenticate', null, { name, pin });
+  if (res && res.success) {
+    currentUser = res.user;
+    sessionStorage.setItem('iget_user', JSON.stringify(currentUser));
+    showApp();
+    loadTab('tasks');
+  } else {
+    err.textContent = (res && res.error) || 'Login failed.';
+    err.style.display = 'block';
+  }
+}
+
+function logout() {
+  currentUser = null;
+  sessionStorage.removeItem('iget_user');
+  showLogin();
+}
+
+function applyRole() {
+  if (!currentUser) return;
+  const role = currentUser.role;
+
+  // Header display
+  document.getElementById('user-display').textContent = currentUser.name + ' · ' + role;
+  const pip = document.getElementById('role-pip');
+  pip.className = 'role-pip' + (role === 'Editor' ? ' editor' : role === 'Viewer' ? ' viewer' : '');
+
+  // Show/hide admin tab
+  if (role === 'Admin') {
+    document.getElementById('tab-users-btn').style.display = 'block';
+  }
+
+  // Write access
+  if (role === 'Viewer') {
+    document.querySelectorAll('.writer-only').forEach(el => el.style.display = 'none');
+  }
+}
+
+// ================================================================
+// SETUP
+// ================================================================
+function toggleSetup() {
+  const p = document.getElementById('setup-panel');
+  p.style.display = p.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function saveScriptUrl() {
   const val = document.getElementById('script-url-input').value.trim();
-  if (!val.startsWith('https://')) { toast('Please enter a valid URL', true); return; }
+  if (!val.startsWith('https://')) { alert('Please enter a valid URL.'); return; }
   SCRIPT_URL = val;
   localStorage.setItem('iget_script_url', SCRIPT_URL);
-  document.getElementById('setup-banner').style.display = 'none';
-  ping().then(() => loadTab('tasks'));
+  document.getElementById('setup-panel').style.display = 'none';
+  await loadUserList();
+  toast('Connected to Google Sheets.');
 }
 
 // ================================================================
-// API CALLS
+// API
 // ================================================================
 async function api(action, tab, extra = {}) {
-  if (!SCRIPT_URL) { toast('Connect to Google Sheets first', true); return null; }
-  const body = { action, tab, ...extra };
+  if (!SCRIPT_URL) return null;
+  const body = { action, ...(tab ? { tab } : {}), ...extra };
   try {
-    const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(body)
-    });
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(body) });
     return await res.json();
-  } catch (e) {
-    // Fallback: GET with params (CORS workaround)
+  } catch(e) {
     try {
-      const params = new URLSearchParams({ action, tab });
+      const params = new URLSearchParams({ action, ...(tab ? { tab } : {}) });
       const res = await fetch(SCRIPT_URL + '?' + params);
       return await res.json();
-    } catch (e2) {
-      toast('Connection error. Check your URL.', true);
-      return null;
-    }
+    } catch(e2) { return null; }
   }
 }
 
-async function ping() {
-  const dot   = document.getElementById('conn-dot');
-  const label = document.getElementById('conn-label');
-  const res   = await api('ping', 'tasks');
-  if (res && res.success) {
-    dot.classList.add('connected');
-    label.textContent = 'Connected to Google Sheets';
-  } else {
-    dot.classList.remove('connected');
-    label.textContent = 'Connection failed';
-  }
+// ================================================================
+// USER LIST (for login dropdown + users tab)
+// ================================================================
+async function loadUserList() {
+  const res = await api('getUsers', null);
+  if (!res || !res.success) return;
+  cache.users = res.data || [];
+
+  // Populate login dropdown
+  const sel = document.getElementById('login-name');
+  sel.innerHTML = '<option value="">— Select your name —</option>';
+  cache.users.filter(u => u['Status'] === 'Active').forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u['Name']; opt.textContent = u['Name'];
+    sel.appendChild(opt);
+  });
+
+  // Render users grid if on users tab
+  renderUsersGrid(cache.users);
+
+  // Show seed panel if no users exist
+  const seedPanel = document.getElementById('seed-panel');
+  if (seedPanel) seedPanel.style.display = cache.users.length === 0 ? 'block' : 'none';
+
+  // Update conn dot
+  document.getElementById('conn-dot').classList.add('connected');
 }
 
 // ================================================================
@@ -643,7 +576,8 @@ function switchTab(tab, btn) {
   btn.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
   currentTab = tab;
-  loadTab(tab);
+  if (tab === 'users') { loadUserList(); }
+  else { loadTab(tab); }
 }
 
 async function loadTab(tab) {
@@ -651,12 +585,12 @@ async function loadTab(tab) {
   const table   = document.getElementById(tab + '-table');
   const empty   = document.getElementById(tab + '-empty');
   if (loading) loading.style.display = 'block';
-  if (table)   table.style.display   = 'none';
-  if (empty)   empty.style.display   = 'none';
+  if (table)   table.style.display = 'none';
+  if (empty)   empty.style.display = 'none';
 
   const res = await api('getAll', tab);
   if (!res || !res.success) {
-    if (loading) loading.textContent = 'Failed to load. Check connection.';
+    if (loading) loading.textContent = 'Failed to load.';
     return;
   }
   cache[tab] = res.data || [];
@@ -671,361 +605,214 @@ async function loadTab(tab) {
 function renderTable(tab, rows) {
   const table = document.getElementById(tab + '-table');
   const empty = document.getElementById(tab + '-empty');
+  if (!table) return;
   const tbody = table.querySelector('tbody');
   tbody.innerHTML = '';
+  if (!rows.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
+  table.style.display = 'table'; empty.style.display = 'none';
+  rows.forEach(row => { const tr = document.createElement('tr'); tr.innerHTML = rowHTML(tab, row); tbody.appendChild(tr); });
+}
 
-  if (!rows.length) {
-    table.style.display = 'none';
-    empty.style.display = 'block';
-    return;
-  }
-  table.style.display = 'table';
-  empty.style.display = 'none';
+const isWriter = () => currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Editor');
+const isAdmin  = () => currentUser && currentUser.role === 'Admin';
 
-  rows.forEach(row => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = rowHTML(tab, row);
-    tbody.appendChild(tr);
-  });
+function actionBtns(tab, r) {
+  if (!isWriter()) return '<td>—</td>';
+  const del = isAdmin() ? `<button class="btn btn-danger btn-sm" onclick="deleteRow('${tab}','${r.ID}')">Del</button>` : '';
+  return `<td><div style="display:flex;gap:5px">
+    <button class="btn btn-outline btn-sm" onclick='openEditModal("${tab}",${JSON.stringify(r).replace(/'/g,"&#39;")})'>Edit</button>
+    ${del}</div></td>`;
 }
 
 function rowHTML(tab, r) {
-  const actions = `
-    <div style="display:flex;gap:6px">
-      <button class="btn btn-outline btn-sm" onclick='openEditModal("${tab}", ${JSON.stringify(r).replace(/'/g, "&#39;")})'>Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteRow('${tab}', '${r.ID}')">Del</button>
-    </div>`;
-
-  if (tab === 'tasks') return `
+  const by = `<td style="font-size:11px;color:var(--text-muted)">${r['Updated By']||''}</td>`;
+  if (tab==='tasks') return `
     <td><span class="badge ${catBadge(r['Category'])}">${r['Category']||''}</span></td>
-    <td>${r['Task']||''}</td>
-    <td>${r['Owner']||''}</td>
+    <td>${r['Task']||''}</td><td>${r['Owner']||''}</td>
     <td><span class="badge ${priBadge(r['Priority'])}">${r['Priority']||''}</span></td>
     <td><span class="badge ${statusBadge(r['Status'])}">${r['Status']||''}</span></td>
     <td>${r['Due Date']||''}</td>
-    <td style="max-width:180px;font-size:12px;color:var(--text-muted)">${r['Notes']||''}</td>
-    <td>${actions}</td>`;
-
-  if (tab === 'queries') return `
-    <td>${r['Date Received']||''}</td>
-    <td>${r['Name']||''}</td>
-    <td style="font-size:12px">${r['Email']||''}</td>
-    <td>${r['Subject']||''}</td>
-    <td>${r['Assigned To']||''}</td>
-    <td>${r['Response Date']||''}</td>
+    <td style="font-size:12px;color:var(--text-muted);max-width:160px">${r['Notes']||''}</td>
+    ${by}${actionBtns(tab,r)}`;
+  if (tab==='queries') return `
+    <td>${r['Date Received']||''}</td><td>${r['Name']||''}</td>
+    <td style="font-size:12px">${r['Email']||''}</td><td>${r['Subject']||''}</td>
+    <td>${r['Assigned To']||''}</td><td>${r['Response Date']||''}</td>
     <td><span class="badge ${queryStatusBadge(r['Status'])}">${r['Status']||''}</span></td>
-    <td>${actions}</td>`;
-
-  if (tab === 'papers') {
+    ${by}${actionBtns(tab,r)}`;
+  if (tab==='papers') {
     const days = daysLeft(r['Review Due Date']);
-    const daysBadge = days === null ? '' :
-      days < 0  ? `<span class="badge badge-red">Overdue ${Math.abs(days)}d</span>` :
-      days <= 3 ? `<span class="badge badge-orange">${days}d left</span>` :
-                  `<span class="badge badge-green">${days}d left</span>`;
-    return `
-    <td>${r['Paper Title']||''}</td>
-    <td style="font-size:12px">${r['Authors']||''}</td>
-    <td>${r['Assigned Reviewer']||''}</td>
-    <td>${r['Review Due Date']||''}</td>
-    <td>${daysBadge}</td>
+    const dl = days===null?'': days<0?`<span class="badge badge-red">Overdue ${Math.abs(days)}d</span>`:
+               days<=3?`<span class="badge badge-orange">${days}d</span>`:`<span class="badge badge-green">${days}d</span>`;
+    return `<td>${r['Paper Title']||''}</td><td style="font-size:12px">${r['Authors']||''}</td>
+    <td>${r['Assigned Reviewer']||''}</td><td>${r['Review Due Date']||''}</td><td>${dl}</td>
     <td><span class="badge ${reviewBadge(r['Review Status'])}">${r['Review Status']||''}</span></td>
     <td><span class="badge ${decisionBadge(r['Decision'])}">${r['Decision']||''}</span></td>
-    <td>${actions}</td>`;
+    ${by}${actionBtns(tab,r)}`;
   }
-
-  if (tab === 'team') return `
-    <td><strong>${r['Name']||''}</strong></td>
-    <td>${r['Role']||''}</td>
+  if (tab==='team') return `
+    <td><strong>${r['Name']||''}</strong></td><td>${r['Role']||''}</td>
     <td style="font-size:12px">${r['Affiliation']||''}</td>
     <td style="font-size:12px">${r['Email']||''}</td>
     <td style="font-size:12px">${r['Area of Responsibility']||''}</td>
     <td><span class="badge ${memberBadge(r['Status'])}">${r['Status']||''}</span></td>
-    <td>${actions}</td>`;
-
-  if (tab === 'sponsors') return `
+    ${by}${actionBtns(tab,r)}`;
+  if (tab==='sponsors') return `
     <td><strong>${r['Organization']||''}</strong></td>
     <td><span class="badge ${tierBadge(r['Tier'])}">${r['Tier']||''}</span></td>
-    <td>${r['Contact Person']||''}</td>
-    <td style="font-size:12px">${r['Email']||''}</td>
+    <td>${r['Contact Person']||''}</td><td style="font-size:12px">${r['Email']||''}</td>
     <td><span class="badge ${sponsorStatusBadge(r['Approach Status'])}">${r['Approach Status']||''}</span></td>
-    <td>${r['Agreement Signed']||''}</td>
-    <td>${r['Logo Received']||''}</td>
-    <td>${actions}</td>`;
-
+    <td>${r['Agreement Signed']||''}</td><td>${r['Logo Received']||''}</td>
+    ${by}${actionBtns(tab,r)}`;
   return '';
 }
 
 // ================================================================
-// STATS BARS
+// USERS GRID
+// ================================================================
+function renderUsersGrid(users) {
+  const grid  = document.getElementById('users-grid');
+  const empty = document.getElementById('users-empty');
+  if (!grid) return;
+  if (!users.length) { grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = users.map(u => {
+    const initials = u['Name'].split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    const roleBadge = u['Role']==='Admin'?'badge-blue':u['Role']==='Editor'?'badge-yellow':'badge-gray';
+    const statusBdg = u['Status']==='Active'?'badge-green':'badge-red';
+    const delBtn = isAdmin() && u['Name'] !== currentUser.name
+      ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u['ID']}','${u['Name']}')">Remove</button>` : '';
+    return `<div class="user-card">
+      <div class="user-card-header">
+        <div class="user-avatar">${initials}</div>
+        <div>
+          <div class="user-card-name">${u['Name']}</div>
+          <div class="user-card-email">${u['Email']||''}</div>
+        </div>
+      </div>
+      <div class="user-card-meta">
+        <span class="badge ${roleBadge}">${u['Role']}</span>
+        <span class="badge ${statusBdg}">${u['Status']}</span>
+      </div>
+      ${u['Area of Responsibility']?`<div style="font-size:12px;color:var(--text-muted)">${u['Area of Responsibility']}</div>`:''}
+      <div class="user-card-actions">
+        <button class="btn btn-outline btn-sm" onclick='openEditUserModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>Edit</button>
+        ${delBtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ================================================================
+// STATS
 // ================================================================
 function renderStats(tab, rows) {
-  const el = document.getElementById(tab + '-stats');
+  const el = document.getElementById(tab+'-stats');
   if (!el) return;
-
-  if (tab === 'tasks') {
-    const done    = rows.filter(r => r['Status'] === 'Done').length;
-    const blocked = rows.filter(r => r['Status'] === 'Blocked').length;
-    const high    = rows.filter(r => r['Priority'] === 'High').length;
-    el.innerHTML = chip(rows.length, 'Total') + chip(done, 'Done', 'var(--green)') +
-      chip(blocked, 'Blocked', 'var(--red)') + chip(high, 'High Priority', 'var(--ieee-orange)');
+  if (tab==='tasks') {
+    const done=rows.filter(r=>r['Status']==='Done').length;
+    const blk=rows.filter(r=>r['Status']==='Blocked').length;
+    const hi=rows.filter(r=>r['Priority']==='High').length;
+    el.innerHTML=chip(rows.length,'Total')+chip(done,'Done','var(--green)')+chip(blk,'Blocked','var(--red)')+chip(hi,'High Priority','var(--ieee-orange)');
   }
-  if (tab === 'queries') {
-    const open = rows.filter(r => r['Status'] !== 'Closed').length;
-    const newQ = rows.filter(r => r['Status'] === 'New').length;
-    el.innerHTML = chip(rows.length, 'Total') + chip(newQ, 'New', 'var(--ieee-orange)') +
-      chip(open, 'Open', 'var(--ieee-blue-lt)');
+  if (tab==='queries') {
+    const nw=rows.filter(r=>r['Status']==='New').length;
+    const op=rows.filter(r=>r['Status']!=='Closed').length;
+    el.innerHTML=chip(rows.length,'Total')+chip(nw,'New','var(--ieee-orange)')+chip(op,'Open','var(--ieee-blue-lt)');
   }
-  if (tab === 'papers') {
-    const late = rows.filter(r => daysLeft(r['Review Due Date']) < 0).length;
-    const done = rows.filter(r => r['Review Status'] === 'Submitted').length;
-    el.innerHTML = chip(rows.length, 'Total') + chip(done, 'Submitted', 'var(--green)') +
-      chip(late, 'Overdue', 'var(--red)');
+  if (tab==='papers') {
+    const late=rows.filter(r=>daysLeft(r['Review Due Date'])<0).length;
+    const done=rows.filter(r=>r['Review Status']==='Submitted').length;
+    el.innerHTML=chip(rows.length,'Total')+chip(done,'Submitted','var(--green)')+chip(late,'Overdue','var(--red)');
   }
-  if (tab === 'sponsors') {
-    const confirmed = rows.filter(r => r['Approach Status'] === 'Confirmed').length;
-    el.innerHTML = chip(rows.length, 'Total') + chip(confirmed, 'Confirmed', 'var(--green)');
+  if (tab==='sponsors') {
+    const conf=rows.filter(r=>r['Approach Status']==='Confirmed').length;
+    el.innerHTML=chip(rows.length,'Total')+chip(conf,'Confirmed','var(--green)');
   }
 }
-
-function chip(num, label, color) {
-  return `<div class="stat-chip"><span class="num" style="${color ? 'color:'+color : ''}">${num}</span>${label}</div>`;
-}
+function chip(n,l,c){return `<div class="stat-chip"><span class="num" ${c?'style="color:'+c+'"':''}>${n}</span>${l}</div>`;}
 
 // ================================================================
-// MODAL FORMS
+// FORMS
 // ================================================================
 const FORMS = {
-  tasks: `
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Category</label>
-        <select name="Category">
-          <option>Website</option><option>Content</option><option>Speakers & Keynotes</option>
-          <option>Sponsors & Patrons</option><option>Registration</option>
-          <option>Important Dates</option><option>Communications</option>
-          <option>Committee & Volunteers</option><option>Logistics & Venue</option><option>Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Owner</label>
-        <select name="Owner">
-          <option>Brij</option><option>Gora</option><option>Khanh</option><option>TBD</option><option>All</option>
-        </select>
-      </div>
-      <div class="form-group full">
-        <label>Task</label>
-        <input type="text" name="Task" placeholder="Describe the task"/>
-      </div>
-      <div class="form-group">
-        <label>Priority</label>
-        <select name="Priority">
-          <option>High</option><option>Medium</option><option>Low</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select name="Status">
-          <option>Not Started</option><option>In Progress</option>
-          <option>Blocked</option><option>Done</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Due Date</label>
-        <input type="date" name="Due Date"/>
-      </div>
-      <div class="form-group full">
-        <label>Notes</label>
-        <textarea name="Notes" placeholder="Any additional context..."></textarea>
-      </div>
-    </div>`,
+  tasks:`<div class="form-grid">
+    <div class="form-group"><label>Category</label><select name="Category">
+      <option>Website</option><option>Content</option><option>Speakers & Keynotes</option>
+      <option>Sponsors & Patrons</option><option>Registration</option><option>Important Dates</option>
+      <option>Communications</option><option>Committee & Volunteers</option><option>Logistics & Venue</option><option>Other</option>
+    </select></div>
+    <div class="form-group"><label>Owner</label><select name="Owner">
+      <option>Brij</option><option>Gora</option><option>Khanh</option><option>TBD</option><option>All</option>
+    </select></div>
+    <div class="form-group full"><label>Task</label><input type="text" name="Task" placeholder="Describe the task"/></div>
+    <div class="form-group"><label>Priority</label><select name="Priority"><option>High</option><option>Medium</option><option>Low</option></select></div>
+    <div class="form-group"><label>Status</label><select name="Status"><option>Not Started</option><option>In Progress</option><option>Blocked</option><option>Done</option></select></div>
+    <div class="form-group"><label>Due Date</label><input type="date" name="Due Date"/></div>
+    <div class="form-group full"><label>Notes</label><textarea name="Notes" placeholder="Additional context..."></textarea></div>
+  </div>`,
 
-  queries: `
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Date Received</label>
-        <input type="date" name="Date Received"/>
-      </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select name="Status">
-          <option>New</option><option>In Progress</option>
-          <option>Responded</option><option>Closed</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" name="Name" placeholder="Sender's name"/>
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="Email" placeholder="sender@email.com"/>
-      </div>
-      <div class="form-group full">
-        <label>Subject</label>
-        <input type="text" name="Subject" placeholder="Query subject"/>
-      </div>
-      <div class="form-group full">
-        <label>Query Summary</label>
-        <textarea name="Query Summary" placeholder="What did they ask?"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Assigned To</label>
-        <select name="Assigned To">
-          <option>Brij</option><option>Gora</option><option>Khanh</option><option>TBD</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Response Date</label>
-        <input type="date" name="Response Date"/>
-      </div>
-      <div class="form-group full">
-        <label>Response Summary</label>
-        <textarea name="Response Summary" placeholder="How was it resolved?"></textarea>
-      </div>
-    </div>`,
+  queries:`<div class="form-grid">
+    <div class="form-group"><label>Date Received</label><input type="date" name="Date Received"/></div>
+    <div class="form-group"><label>Status</label><select name="Status"><option>New</option><option>In Progress</option><option>Responded</option><option>Closed</option></select></div>
+    <div class="form-group"><label>Name</label><input type="text" name="Name" placeholder="Sender's name"/></div>
+    <div class="form-group"><label>Email</label><input type="email" name="Email" placeholder="sender@email.com"/></div>
+    <div class="form-group full"><label>Subject</label><input type="text" name="Subject" placeholder="Query subject"/></div>
+    <div class="form-group full"><label>Query Summary</label><textarea name="Query Summary" placeholder="What did they ask?"></textarea></div>
+    <div class="form-group"><label>Assigned To</label><select name="Assigned To"><option>Brij</option><option>Gora</option><option>Khanh</option><option>TBD</option></select></div>
+    <div class="form-group"><label>Response Date</label><input type="date" name="Response Date"/></div>
+    <div class="form-group full"><label>Response Summary</label><textarea name="Response Summary" placeholder="How was it resolved?"></textarea></div>
+  </div>`,
 
-  papers: `
-    <div class="form-grid">
-      <div class="form-group full">
-        <label>Paper Title</label>
-        <input type="text" name="Paper Title" placeholder="Full paper title"/>
-      </div>
-      <div class="form-group full">
-        <label>Authors</label>
-        <input type="text" name="Authors" placeholder="Author names"/>
-      </div>
-      <div class="form-group">
-        <label>Submission Date</label>
-        <input type="date" name="Submission Date"/>
-      </div>
-      <div class="form-group">
-        <label>Assigned Reviewer</label>
-        <input type="text" name="Assigned Reviewer" placeholder="Reviewer name"/>
-      </div>
-      <div class="form-group">
-        <label>Review Due Date</label>
-        <input type="date" name="Review Due Date"/>
-      </div>
-      <div class="form-group">
-        <label>Review Status</label>
-        <select name="Review Status">
-          <option>Assigned</option><option>In Progress</option>
-          <option>Submitted</option><option>Late</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Decision</label>
-        <select name="Decision">
-          <option>Pending</option><option>Accept</option><option>Minor Revision</option>
-          <option>Major Revision</option><option>Reject</option>
-        </select>
-      </div>
-      <div class="form-group full">
-        <label>Notes</label>
-        <textarea name="Notes" placeholder="Any notes for this paper..."></textarea>
-      </div>
-    </div>`,
+  papers:`<div class="form-grid">
+    <div class="form-group full"><label>Paper Title</label><input type="text" name="Paper Title" placeholder="Full paper title"/></div>
+    <div class="form-group full"><label>Authors</label><input type="text" name="Authors" placeholder="Author names"/></div>
+    <div class="form-group"><label>Submission Date</label><input type="date" name="Submission Date"/></div>
+    <div class="form-group"><label>Assigned Reviewer</label><input type="text" name="Assigned Reviewer" placeholder="Reviewer name"/></div>
+    <div class="form-group"><label>Review Due Date</label><input type="date" name="Review Due Date"/></div>
+    <div class="form-group"><label>Review Status</label><select name="Review Status"><option>Assigned</option><option>In Progress</option><option>Submitted</option><option>Late</option></select></div>
+    <div class="form-group"><label>Decision</label><select name="Decision"><option>Pending</option><option>Accept</option><option>Minor Revision</option><option>Major Revision</option><option>Reject</option></select></div>
+    <div class="form-group full"><label>Notes</label><textarea name="Notes" placeholder="Notes for this paper..."></textarea></div>
+  </div>`,
 
-  team: `
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" name="Name" placeholder="Full name"/>
-      </div>
-      <div class="form-group">
-        <label>Role</label>
-        <input type="text" name="Role" placeholder="e.g. General Chair"/>
-      </div>
-      <div class="form-group">
-        <label>Affiliation</label>
-        <input type="text" name="Affiliation" placeholder="University / Company"/>
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="Email" placeholder="email@org.com"/>
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="text" name="Phone" placeholder="+1 xxx xxx xxxx"/>
-      </div>
-      <div class="form-group">
-        <label>IEEE Member Number</label>
-        <input type="text" name="IEEE Member Number" placeholder="Optional"/>
-      </div>
-      <div class="form-group full">
-        <label>Area of Responsibility</label>
-        <input type="text" name="Area of Responsibility" placeholder="e.g. Website, Paper Reviews"/>
-      </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select name="Status">
-          <option>Active</option><option>On Leave</option><option>Inactive</option>
-        </select>
-      </div>
-      <div class="form-group full">
-        <label>Availability Notes</label>
-        <textarea name="Availability Notes" placeholder="Any notes on availability..."></textarea>
-      </div>
-    </div>`,
+  team:`<div class="form-grid">
+    <div class="form-group"><label>Name</label><input type="text" name="Name" placeholder="Full name"/></div>
+    <div class="form-group"><label>Role</label><input type="text" name="Role" placeholder="e.g. General Chair"/></div>
+    <div class="form-group"><label>Affiliation</label><input type="text" name="Affiliation" placeholder="University / Company"/></div>
+    <div class="form-group"><label>Email</label><input type="email" name="Email" placeholder="email@org.com"/></div>
+    <div class="form-group"><label>Phone</label><input type="text" name="Phone" placeholder="+1 xxx xxx xxxx"/></div>
+    <div class="form-group"><label>IEEE Member Number</label><input type="text" name="IEEE Member Number" placeholder="Optional"/></div>
+    <div class="form-group full"><label>Area of Responsibility</label><input type="text" name="Area of Responsibility" placeholder="e.g. Website, Paper Reviews"/></div>
+    <div class="form-group"><label>Status</label><select name="Status"><option>Active</option><option>On Leave</option><option>Inactive</option></select></div>
+    <div class="form-group full"><label>Availability Notes</label><textarea name="Availability Notes" placeholder="Availability notes..."></textarea></div>
+  </div>`,
 
-  sponsors: `
-    <div class="form-grid">
-      <div class="form-group full">
-        <label>Organization</label>
-        <input type="text" name="Organization" placeholder="Organization name"/>
-      </div>
-      <div class="form-group">
-        <label>Tier</label>
-        <select name="Tier">
-          <option>Sponsor</option><option>Patron</option><option>Supporter</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Approach Status</label>
-        <select name="Approach Status">
-          <option>Approached</option><option>In Discussion</option>
-          <option>Confirmed</option><option>Declined</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Contact Person</label>
-        <input type="text" name="Contact Person" placeholder="Name"/>
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="Email" placeholder="contact@org.com"/>
-      </div>
-      <div class="form-group">
-        <label>Amount / In-Kind</label>
-        <input type="text" name="Amount / In-Kind" placeholder="e.g. $500 or In-Kind"/>
-      </div>
-      <div class="form-group">
-        <label>Agreement Signed</label>
-        <select name="Agreement Signed">
-          <option>No</option><option>Yes</option><option>Pending</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Logo Received</label>
-        <select name="Logo Received">
-          <option>No</option><option>Yes</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Published on Site</label>
-        <select name="Published on Site">
-          <option>No</option><option>Yes</option>
-        </select>
-      </div>
-      <div class="form-group full">
-        <label>Notes</label>
-        <textarea name="Notes" placeholder="Any additional notes..."></textarea>
-      </div>
-    </div>`
+  sponsors:`<div class="form-grid">
+    <div class="form-group full"><label>Organization</label><input type="text" name="Organization" placeholder="Organization name"/></div>
+    <div class="form-group"><label>Tier</label><select name="Tier"><option>Sponsor</option><option>Patron</option><option>Supporter</option></select></div>
+    <div class="form-group"><label>Approach Status</label><select name="Approach Status"><option>Approached</option><option>In Discussion</option><option>Confirmed</option><option>Declined</option></select></div>
+    <div class="form-group"><label>Contact Person</label><input type="text" name="Contact Person" placeholder="Name"/></div>
+    <div class="form-group"><label>Email</label><input type="email" name="Email" placeholder="contact@org.com"/></div>
+    <div class="form-group"><label>Amount / In-Kind</label><input type="text" name="Amount / In-Kind" placeholder="e.g. $500 or In-Kind"/></div>
+    <div class="form-group"><label>Agreement Signed</label><select name="Agreement Signed"><option>No</option><option>Yes</option><option>Pending</option></select></div>
+    <div class="form-group"><label>Logo Received</label><select name="Logo Received"><option>No</option><option>Yes</option></select></div>
+    <div class="form-group"><label>Published on Site</label><select name="Published on Site"><option>No</option><option>Yes</option></select></div>
+    <div class="form-group full"><label>Notes</label><textarea name="Notes" placeholder="Additional notes..."></textarea></div>
+  </div>`,
+
+  users:`<div class="form-grid">
+    <div class="form-group"><label>Full Name</label><input type="text" name="Name" placeholder="Full name"/></div>
+    <div class="form-group"><label>Email</label><input type="email" name="Email" placeholder="email@org.com"/></div>
+    <div class="form-group"><label>Role</label><select name="Role"><option>Editor</option><option>Viewer</option><option>Admin</option></select></div>
+    <div class="form-group"><label>Status</label><select name="Status"><option>Active</option><option>Inactive</option></select></div>
+    <div class="form-group"><label>PIN (4-8 digits)</label><input type="password" name="PIN" placeholder="Set a PIN" maxlength="8"/></div>
+    <div class="form-group"><label>Area of Responsibility</label><input type="text" name="Area of Responsibility" placeholder="e.g. Website"/></div>
+  </div>`
 };
 
-function openModal(tab, title) {
-  editingId = null;
+function openModal(tab) {
+  if (!isWriter()) return;
+  editingId = null; editingType = 'row';
   document.getElementById('modal-title').textContent = 'Add ' + tabLabel(tab);
   document.getElementById('modal-form-body').innerHTML = FORMS[tab];
   document.getElementById('modal-save-btn').textContent = 'Save';
@@ -1033,21 +820,44 @@ function openModal(tab, title) {
 }
 
 function openEditModal(tab, row) {
-  editingId = row['ID'];
+  if (!isWriter()) return;
+  editingId = row['ID']; editingType = 'row';
   document.getElementById('modal-title').textContent = 'Edit ' + tabLabel(tab);
   document.getElementById('modal-form-body').innerHTML = FORMS[tab];
-  // Populate fields
   document.querySelectorAll('#modal-form-body [name]').forEach(el => {
-    const key = el.getAttribute('name');
-    if (row[key] !== undefined) el.value = row[key];
+    const k = el.getAttribute('name');
+    if (row[k] !== undefined) el.value = row[k];
   });
   document.getElementById('modal-save-btn').textContent = 'Update';
   document.getElementById('modal-overlay').classList.add('open');
 }
 
+function openUserModal() {
+  if (!isAdmin()) return;
+  editingId = null; editingType = 'user';
+  document.getElementById('modal-title').textContent = 'Add User';
+  document.getElementById('modal-form-body').innerHTML = FORMS['users'];
+  document.getElementById('modal-save-btn').textContent = 'Create User';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openEditUserModal(user) {
+  if (!isAdmin()) return;
+  editingId = user['ID']; editingType = 'user';
+  document.getElementById('modal-title').textContent = 'Edit User';
+  document.getElementById('modal-form-body').innerHTML = FORMS['users'];
+  document.querySelectorAll('#modal-form-body [name]').forEach(el => {
+    const k = el.getAttribute('name');
+    if (k !== 'PIN' && user[k] !== undefined) el.value = user[k];
+  });
+  document.querySelector('#modal-form-body [name="PIN"]').placeholder = 'Leave blank to keep current PIN';
+  document.getElementById('modal-save-btn').textContent = 'Update User';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
-  editingId = null;
+  editingId = null; editingType = null;
 }
 
 async function saveRow() {
@@ -1057,34 +867,62 @@ async function saveRow() {
   });
 
   let res;
-  if (editingId) {
-    res = await api('updateRow', currentTab, { id: editingId, row: fields });
-    if (res && res.success) toast('Updated successfully.');
+  if (editingType === 'user') {
+    if (editingId) {
+      if (!fields['PIN']) delete fields['PIN']; // keep existing PIN if blank
+      res = await api('updateUser', null, { id: editingId, user: fields });
+    } else {
+      res = await api('addUser', null, { user: fields, createdBy: currentUser.name });
+    }
   } else {
-    res = await api('addRow', currentTab, { row: fields });
-    if (res && res.success) toast('Added successfully.');
+    if (editingId) {
+      res = await api('updateRow', currentTab, { id: editingId, row: fields, updatedBy: currentUser.name });
+    } else {
+      res = await api('addRow', currentTab, { row: fields, updatedBy: currentUser.name });
+    }
   }
+
   if (res && res.success) {
+    toast(editingId ? 'Updated.' : 'Added.');
     closeModal();
-    loadTab(currentTab);
+    if (editingType === 'user') loadUserList();
+    else loadTab(currentTab);
   } else {
     toast('Save failed. Please try again.', true);
   }
 }
 
 async function deleteRow(tab, id) {
+  if (!isAdmin()) return;
   if (!confirm('Delete this entry? This cannot be undone.')) return;
   const res = await api('deleteRow', tab, { id });
+  if (res && res.success) { toast('Deleted.'); loadTab(tab); }
+  else toast('Delete failed.', true);
+}
+
+async function deleteUser(id, name) {
+  if (!isAdmin()) return;
+  if (!confirm(`Remove user "${name}"? They will no longer be able to log in.`)) return;
+  const res = await api('deleteUser', null, { id });
+  if (res && res.success) { toast('User removed.'); loadUserList(); }
+  else toast('Failed to remove user.', true);
+}
+
+async function seedAdmin() {
+  const pin = document.getElementById('seed-pin').value;
+  if (!pin || pin.length < 4) { toast('PIN must be at least 4 digits.', true); return; }
+  const res = await api('seedAdmin', null, { pin });
   if (res && res.success) {
-    toast('Deleted.');
-    loadTab(tab);
+    toast('Admin account created. You can now log in as Brij Mohan.');
+    document.getElementById('seed-panel').style.display = 'none';
+    await loadUserList();
   } else {
-    toast('Delete failed.', true);
+    toast((res && res.error) || 'Seed failed.', true);
   }
 }
 
 // ================================================================
-// SEARCH / FILTER
+// SEARCH / FILTER / EXPORT
 // ================================================================
 function filterTable(tableId, query) {
   const q = query.toLowerCase();
@@ -1093,81 +931,46 @@ function filterTable(tableId, query) {
   });
 }
 
-// ================================================================
-// CSV EXPORT
-// ================================================================
 function exportCSV(tab) {
   const rows = cache[tab];
   if (!rows.length) { toast('Nothing to export.', true); return; }
   const headers = Object.keys(rows[0]);
   const csv = [headers.join(','), ...rows.map(r =>
-    headers.map(h => '"' + String(r[h] || '').replace(/"/g, '""') + '"').join(',')
+    headers.map(h => '"' + String(r[h]||'').replace(/"/g,'""') + '"').join(',')
   )].join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'iget-' + tab + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.download = 'iget-' + tab + '-' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
 }
 
 // ================================================================
 // HELPERS
 // ================================================================
-function daysLeft(dateStr) {
-  if (!dateStr) return null;
-  const due  = new Date(dateStr);
-  const now  = new Date();
+function daysLeft(d) {
+  if (!d) return null;
+  const due=new Date(d), now=new Date();
   due.setHours(0,0,0,0); now.setHours(0,0,0,0);
-  return Math.round((due - now) / 86400000);
+  return Math.round((due-now)/86400000);
 }
-
-function tabLabel(tab) {
-  return { tasks:'Task', queries:'Query', papers:'Paper', team:'Team Member', sponsors:'Sponsor' }[tab] || tab;
-}
-
-// Badge color helpers
-function catBadge(c) {
-  const m = { 'Website':'badge-blue','Content':'badge-purple','Speakers & Keynotes':'badge-orange',
-    'Sponsors & Patrons':'badge-green','Registration':'badge-yellow','Important Dates':'badge-red',
-    'Communications':'badge-blue','Committee & Volunteers':'badge-purple','Logistics & Venue':'badge-gray' };
-  return m[c] || 'badge-gray';
-}
-function priBadge(p) {
-  return { High:'badge-red', Medium:'badge-yellow', Low:'badge-green' }[p] || 'badge-gray';
-}
-function statusBadge(s) {
-  return { 'Not Started':'badge-gray','In Progress':'badge-blue','Blocked':'badge-red','Done':'badge-green' }[s] || 'badge-gray';
-}
-function queryStatusBadge(s) {
-  return { 'New':'badge-orange','In Progress':'badge-blue','Responded':'badge-purple','Closed':'badge-green' }[s] || 'badge-gray';
-}
-function reviewBadge(s) {
-  return { 'Assigned':'badge-blue','In Progress':'badge-yellow','Submitted':'badge-green','Late':'badge-red' }[s] || 'badge-gray';
-}
-function decisionBadge(s) {
-  return { 'Pending':'badge-gray','Accept':'badge-green','Minor Revision':'badge-yellow',
-    'Major Revision':'badge-orange','Reject':'badge-red' }[s] || 'badge-gray';
-}
-function memberBadge(s) {
-  return { 'Active':'badge-green','On Leave':'badge-yellow','Inactive':'badge-gray' }[s] || 'badge-gray';
-}
-function tierBadge(t) {
-  return { 'Sponsor':'badge-blue','Patron':'badge-purple','Supporter':'badge-green' }[t] || 'badge-gray';
-}
-function sponsorStatusBadge(s) {
-  return { 'Approached':'badge-gray','In Discussion':'badge-yellow','Confirmed':'badge-green','Declined':'badge-red' }[s] || 'badge-gray';
-}
-
-// Toast
+function tabLabel(t) { return {tasks:'Task',queries:'Query',papers:'Paper',team:'Team Member',sponsors:'Sponsor',users:'User'}[t]||t; }
+function catBadge(c) { return {Website:'badge-blue',Content:'badge-purple','Speakers & Keynotes':'badge-orange','Sponsors & Patrons':'badge-green',Registration:'badge-yellow','Important Dates':'badge-red',Communications:'badge-blue','Committee & Volunteers':'badge-purple','Logistics & Venue':'badge-gray'}[c]||'badge-gray'; }
+function priBadge(p) { return {High:'badge-red',Medium:'badge-yellow',Low:'badge-green'}[p]||'badge-gray'; }
+function statusBadge(s) { return {'Not Started':'badge-gray','In Progress':'badge-blue',Blocked:'badge-red',Done:'badge-green'}[s]||'badge-gray'; }
+function queryStatusBadge(s) { return {New:'badge-orange','In Progress':'badge-blue',Responded:'badge-purple',Closed:'badge-green'}[s]||'badge-gray'; }
+function reviewBadge(s) { return {Assigned:'badge-blue','In Progress':'badge-yellow',Submitted:'badge-green',Late:'badge-red'}[s]||'badge-gray'; }
+function decisionBadge(s) { return {Pending:'badge-gray',Accept:'badge-green','Minor Revision':'badge-yellow','Major Revision':'badge-orange',Reject:'badge-red'}[s]||'badge-gray'; }
+function memberBadge(s) { return {Active:'badge-green','On Leave':'badge-yellow',Inactive:'badge-gray'}[s]||'badge-gray'; }
+function tierBadge(t) { return {Sponsor:'badge-blue',Patron:'badge-purple',Supporter:'badge-green'}[t]||'badge-gray'; }
+function sponsorStatusBadge(s) { return {Approached:'badge-gray','In Discussion':'badge-yellow',Confirmed:'badge-green',Declined:'badge-red'}[s]||'badge-gray'; }
 function toast(msg, isError) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'show' + (isError ? ' error' : '');
-  setTimeout(() => { el.className = ''; }, 3000);
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='show'+(isError?' error':'');
+  setTimeout(()=>{el.className='';},3000);
 }
 
-// Close modal on overlay click
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
+  if (e.target===this) closeModal();
 });
 </script>
 </body>
