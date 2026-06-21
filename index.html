@@ -426,7 +426,15 @@ let cache       = { tasks:[], queries:[], papers:[], sponsors:[], users:[] };
 // BOOT
 // ================================================================
 window.addEventListener('DOMContentLoaded', async () => {
-  if (SCRIPT_URL) document.getElementById('script-url-input').value = SCRIPT_URL;
+  // Guard: script-url-input only exists when setup panel is uncommented
+  const urlInput = document.getElementById('script-url-input');
+  if (urlInput && SCRIPT_URL) urlInput.value = SCRIPT_URL;
+
+  // Restore session from localStorage
+  const saved = localStorage.getItem('iget_user');
+  if (saved) {
+    try { currentUser = JSON.parse(saved); } catch(e) { currentUser = null; }
+  }
 
   if (currentUser && SCRIPT_URL) {
     showApp();
@@ -517,7 +525,9 @@ function toggleSetup() {
 }
 
 async function saveScriptUrl() {
-  const val = document.getElementById('script-url-input').value.trim();
+  const input = document.getElementById('script-url-input');
+  if (!input) return;
+  const val = input.value.trim();
   if (!val.startsWith('https://')) { alert('Please enter a valid URL.'); return; }
   SCRIPT_URL = val;
   localStorage.setItem('iget_script_url', SCRIPT_URL);
