@@ -61,12 +61,12 @@
   .setup-link a { color: var(--ieee-blue-lt); cursor: pointer; text-decoration: underline; }
 
   /* ---- SETUP PANEL ---- */
-  /* #setup-panel {
+  #setup-panel {
     background: #fef3c7; border-top: 3px solid var(--ieee-orange);
     padding: 12px 20px; display: none; align-items: center; gap: 10px; flex-wrap: wrap;
   }
   #setup-panel input { flex: 1; min-width: 260px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: monospace; }
-  #setup-panel button { background: var(--ieee-blue); color: #fff; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; white-space: nowrap; } */
+  #setup-panel button { background: var(--ieee-blue); color: #fff; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; white-space: nowrap; }
 
   /* ---- APP SHELL ---- */
   #app-shell { display: none; }
@@ -217,10 +217,9 @@
     </div>
     <div class="login-form">
       <div>
-        <label>Your Name</label>
-        <select id="login-name">
-          <option value="">— Select your name —</option>
-        </select>
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="Enter your email address"
+               onkeydown="if(event.key==='Enter') document.getElementById('login-pin').focus()"/>
       </div>
       <div>
         <label>PIN</label>
@@ -438,7 +437,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     loadTab('tasks');
   } else {
     showLogin();
-    if (SCRIPT_URL) await loadUserList();
   }
 });
 
@@ -457,15 +455,15 @@ function showApp() {
 }
 
 async function doLogin() {
-  const name = document.getElementById('login-name').value;
-  const pin  = document.getElementById('login-pin').value;
-  const err  = document.getElementById('login-error');
+  const email = document.getElementById('login-email').value.trim();
+  const pin   = document.getElementById('login-pin').value;
+  const err   = document.getElementById('login-error');
   err.style.display = 'none';
 
-  if (!name || !pin) { err.textContent = 'Please select your name and enter your PIN.'; err.style.display = 'block'; return; }
-  if (!SCRIPT_URL)   { err.textContent = 'Google Sheets not connected. Use the setup link below.'; err.style.display = 'block'; return; }
+  if (!email || !pin) { err.textContent = 'Please enter your email and PIN.'; err.style.display = 'block'; return; }
+  if (!SCRIPT_URL)    { err.textContent = 'Google Sheets not connected. Contact your administrator.'; err.style.display = 'block'; return; }
 
-  const res = await api('authenticate', null, { name, pin });
+  const res = await api('authenticate', null, { email, pin });
   if (res && res.success) {
     currentUser = res.user;
     sessionStorage.setItem('iget_user', JSON.stringify(currentUser));
@@ -546,15 +544,6 @@ async function loadUserList() {
   const res = await api('getUsers', null);
   if (!res || !res.success) return;
   cache.users = res.data || [];
-
-  // Populate login dropdown
-  const sel = document.getElementById('login-name');
-  sel.innerHTML = '<option value="">— Select your name —</option>';
-  cache.users.filter(u => u['Status'] === 'Active').forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u['Name']; opt.textContent = u['Name'];
-    sel.appendChild(opt);
-  });
 
   // Render users grid if on users tab
   renderUsersGrid(cache.users);
