@@ -419,7 +419,7 @@ let SCRIPT_URL  = localStorage.getItem('iget_script_url') || '';
 let currentTab  = 'tasks';
 let editingId   = null;
 let editingType = null; // 'row' or 'user'
-let currentUser = JSON.parse(sessionStorage.getItem('iget_user') || 'null');
+let currentUser = JSON.parse(localStorage.getItem('iget_user') || 'null');
 let cache       = { tasks:[], queries:[], papers:[], sponsors:[], users:[] };
 
 // ================================================================
@@ -472,7 +472,7 @@ async function doLogin() {
   btn.innerHTML = 'Sign In';
   if (res && res.success) {
     currentUser = res.user;
-    sessionStorage.setItem('iget_user', JSON.stringify(currentUser));
+    localStorage.setItem('iget_user', JSON.stringify(currentUser));
     showApp();
     loadTab('tasks');
   } else {
@@ -483,7 +483,7 @@ async function doLogin() {
 
 function logout() {
   currentUser = null;
-  sessionStorage.removeItem('iget_user');
+  localStorage.removeItem('iget_user');
   showLogin();
 }
 
@@ -795,19 +795,24 @@ const FORMS = {
     <div class="form-group"><label>Email</label><input type="email" name="Email" placeholder="email@org.com"/></div>
     <div class="form-group"><label>Title</label><select name="Title">
       <option value="">— Select title —</option>
-      <option>General Chair</option>
-      <option>Program Chair</option>
+      <option>Conference Chair</option>
+      <option>Conference Vice-Chair</option>
+      <option>TPC Chair</option>
+      <option>TPC Publication Chair</option>
+      <option>TPC Vice Chair</option>
+      <option>TPC Hackathon Chair</option>
       <option>Track Chair</option>
-      <option>Web Chair</option>
-      <option>Publicity Chair</option>
-      <option>Finance Chair</option>
-      <option>Registration Chair</option>
-      <option>Publication Chair</option>
-      <option>Industry Chair</option>
-      <option>Volunteer Chair</option>
+      <option>Marketing & Publicity Chair</option>
+      <option>Marketing & Publicity Co-Chair</option>
+      <option>Marketing Chair Support</option>
+      <option>Local Arrangements Chair</option>
+      <option>Treasurer</option>
+      <option>Website Chair</option>
+      <option>Student Poster Competition Chair</option>
+      <option>Session Chair</option>
+      <option>Member at Large</option>
       <option>Reviewer</option>
-      <option>Organizing Committee</option>
-      <option>Web Administrator</option>
+      <option>Volunteer</option>
       <option>Other</option>
     </select></div>
     <div class="form-group"><label>Role</label><select name="Role"><option>Editor</option><option>Viewer</option><option>Admin</option></select></div>
