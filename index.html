@@ -415,7 +415,13 @@
 // ================================================================
 // STATE
 // ================================================================
-let SCRIPT_URL  = localStorage.getItem('iget_script_url') || '';
+// ================================================================
+// CONFIG — paste your Apps Script Web App URL between the quotes below
+// ================================================================
+const HARDCODED_URL = 'https://script.google.com/macros/s/AKfycbwgo7rIeX-xeQTL8nzqT476O-2xoPIMJSxWGNx-6_-grZaG2VCY-7gFnfkKjk66oe7_gQ/exec';
+let SCRIPT_URL = HARDCODED_URL.startsWith('https://')
+  ? HARDCODED_URL
+  : (localStorage.getItem('iget_script_url') || '');
 let currentTab  = 'tasks';
 let editingId   = null;
 let editingType = null; // 'row' or 'user'
